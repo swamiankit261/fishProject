@@ -1,0 +1,407 @@
+{
+	"info": {
+		"_postman_id": "67b58adf-9065-41e6-83b3-fcdd2afb341d",
+		"name": "fishProduct",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "29807040"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userName\": \"ankit\",\n    \"email\":\"example@gmail.com\",\n    // \"avater\":\"https://cdn-images-1.medium.com/max/1600/0*F0WAufLVwFsSVeDf.png\",\n    \"password\":\"As12345@\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/v1/user/register",
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"email\":\"example@gmail.com\",\r\n    \"password\":\"As12345@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/v1/user/login",
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Update data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userName\":\"ankit swami\"\n//    \"email\":\"example@gmail.com\",\n    // \"avater\":\"https://cdn-images-1.medium.com/max/1600/0*F0WAufLVwFsSVeDf.png\",\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/v1/user/updateUser",
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "user profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:5000/api/v1/user/profile"
+					},
+					"response": []
+				},
+				{
+					"name": "logout user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/v1/user/logout",
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "create product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fishName",
+									"value": "tilapia",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Farm-raised tilapia, fresh and perfect for grilling.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "150.5",
+									"type": "text"
+								},
+								{
+									"key": "countInStock",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Aquarium Fishes",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "6 Inch",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": [
+										"/C:/Users/DELL/Pictures/39dafd9230e10d974a8c3504700601e0.jpg",
+										"/C:/Users/DELL/Pictures/4796ed08c1b564a3e2599cc8797a75d2.jpg",
+										"/C:/Users/DELL/Pictures/dcf5aba608c33129208fbb2785a6502a.jpg",
+										"/C:/Users/DELL/Pictures/download.png"
+									]
+								}
+							]
+						},
+						"url": "http://localhost:5000/api/v1/product/create"
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fishName",
+									"value": "Betta fish",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Growing up to approximately 2 inches, bettas are available in a variety of color and pattern types: solid, marble, butterfly, koi, dalmatian, and more. You’ve then got the tail variations: veil, crown, dumbo, halfmoon, double, just to name a few.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "50.60",
+									"type": "text"
+								},
+								{
+									"key": "countInStock",
+									"value": "50",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Exotic fishes",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "4 Inch",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": [
+										"/C:/Users/DELL/Pictures/04e7abf71bc8fba148084e79c55ac0d8.jpg",
+										"/C:/Users/DELL/Pictures/5sas.jpg",
+										"/C:/Users/DELL/Pictures/7fc8a821e0b3fb00f7bb157c38ca7a5f.jpg"
+									]
+								}
+							]
+						},
+						"url": "http://localhost:5000/api/v1/product/update/67727ef56bb25da2688b0e66"
+					},
+					"response": []
+				},
+				{
+					"name": "productdelete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"67727fc06bb25da2688b0e6d\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/v1/product/delete"
+					},
+					"response": []
+				},
+				{
+					"name": "searchProduct and findProducts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/product/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"product",
+								"search"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "betta",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Aquarium Fishes",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "4",
+									"disabled": true
+								},
+								{
+									"key": "minPrice",
+									"value": "50",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "200",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "createdAt:desc",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n  \"shippingAddress\": {\r\n    \"address\": \"123 Elm Street\",\r\n    \"city\": \"Springfield\",\r\n    \"state\": \"Illinois\",\r\n    \"country\": \"USA\",\r\n    \"postalCode\": \"62704\",\r\n    \"phone\": \"9876543210\"\r\n  },\r\n  \"orderItems\": [\r\n    {\r\n      \"item\": \"67727fc06bb25da2688b0e6d\", \r\n      \"quantity\": 2,\r\n      \"price\": 150.5\r\n    },\r\n    {\r\n      \"item\": \"67727ef56bb25da2688b0e66\",\r\n      \"quantity\": 1,\r\n      \"price\": 50.6\r\n    }\r\n  ],\r\n  \"paymentMethod\": \"Cash on delivery\",\r\n  \"paymentInfo\": {\r\n    \"id\": \"pay_1ABCDEF123\",\r\n    \"status\": \"Paid\"\r\n  },\r\n  \"itemsPrice\": 179.97,\r\n  \"taxPrice\": 10.00,\r\n  \"shippingPrice\": 5.00,\r\n  \"totalPrice\": 194.97,\r\n  \"orderStatus\": \"Pending\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/v1/order/newOrder"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
