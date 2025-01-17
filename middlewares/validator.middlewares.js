@@ -41,39 +41,39 @@ export const isOrder = [
     body("paymentInfo.status", "Payment status is required.")
         .optional()
         .notEmpty(),
-    body("paidAt")
-        .optional()
-        .isDate()
-        .withMessage("PaidAt must be a valid date.")
-        .bail()
-        .custom(async (value, { req }) => {
-            if (value) {
-                const date = new Date(value);
-                const currentDate = new Date();
-                if (date > currentDate) {
-                    return Promise.reject("PaidAt date must be in the past.");
-                }
-            } else if (req.body.paymentMethod !== "Cash on delivery") {
-                return Promise.reject("PaidAt is required for non-COD payment methods.");
-            }
-            return true;
-        }),
-    body("itemsPrice", "Items price is required.")
-        .notEmpty()
-        .bail()
-        .isNumeric()
-        .withMessage("Items price must be a number."),
-    body("taxPrice", "Tax price must be a number.")
-        .optional()
-        .isNumeric(),
-    body("shippingPrice", "Shipping price is required.")
-        .notEmpty()
-        .bail()
-        .isNumeric()
-        .withMessage("Shipping price must be a number."),
-    body("totalPrice", "Total price is required.")
-        .notEmpty()
-        .bail()
-        .isNumeric()
-        .withMessage("Total price must be a number."),
+    // body("paidAt")
+    //     .optional()
+    //     .isDate()
+    //     .withMessage("PaidAt must be a valid date.")
+    //     .bail()
+    //     .custom(async (value, { req }) => {
+    //         if (value) {
+    //             const date = new Date(value);
+    //             const currentDate = new Date();
+    //             if (date > currentDate) {
+    //                 return Promise.reject("PaidAt date must be in the past.");
+    //             }
+    //         } else if (req.body.paymentMethod !== "Cash on delivery") {
+    //             return Promise.reject("PaidAt is required for non-COD payment methods.");
+    //         }
+    //         return true;
+    //     }),
+    // body("itemsPrice", "Items price is required.")
+    //     .notEmpty()
+    //     .bail()
+    //     .isNumeric()
+    //     .withMessage("Items price must be a number."),
+    // body("taxPrice", "Tax price must be a number.")
+    //     .optional()
+    //     .isNumeric(),
+    // body("shippingPrice", "Shipping price is required.")
+    //     .notEmpty()
+    //     .bail()
+    //     .isNumeric()
+    //     .withMessage("Shipping price must be a number."),
+    // body("totalPrice", "Total price is required.")
+    //     .notEmpty()
+    //     .bail()
+    //     .isNumeric()
+    //     .withMessage("Total price must be a number."),
 ];
