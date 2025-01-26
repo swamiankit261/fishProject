@@ -1,0 +1,42 @@
+import { apiSlice } from "./apiSlice";
+import { USERS_URL } from "../consttants";
+
+const userApiSlice = apiSlice.injectEndpoints({
+    endpoints: builder => ({
+        getProfile: builder.query({
+            query: (token) => ({
+                url: `${USERS_URL}/profile`,
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                transformResponse: (response) => response
+            })
+        }),
+        login: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/login`,
+                method: 'POST',
+                body: data,
+                transformResponse: (response) => response
+            })
+        }),
+        register: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/register`,
+                method: 'POST',
+                body: data,
+                transformResponse: (response) => response
+            })
+        }),
+        logoutUser: builder.mutation({
+            query: () => ({
+                url: `${USERS_URL}/logout`,
+                method: 'GET',
+                transformResponse: (response) => response
+            })
+        })
+    }),
+})
+
+export const { useGetProfileQuery, useLoginMutation, useRegisterMutation, useLogoutUserMutation } = userApiSlice;

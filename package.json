@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
+    "frontend": "cd ./frontend && npm start",
+    "backend": "node server.js",
+    "start": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +28,7 @@
     "multer-storage-cloudinary": "^4.0.0"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "nodemon": "^3.1.9"
   }
 }
