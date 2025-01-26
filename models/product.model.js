@@ -72,14 +72,10 @@ const productSchema = new mongoose.Schema(
             ref: "User",
             required: [true, "User reference is required!"]
         },
-        size: {
-            type: String,
-            // enum: {
-            //     values: ["small", "medium", "large"],
-            //     message: "Size must be one of 'small', 'medium', or 'large'."
-            // },
+        size: [{
+            type: Number,
             required: [true, "Size is required!"]
-        },
+        }],
         numOfReviews: {
             type: Number,
             default: 0

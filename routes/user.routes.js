@@ -5,7 +5,7 @@ import { AuthenticationJWT } from "../middlewares/auth.middleware.js";
 const rout = express.Router();
 
 rout.route("/register").post(createUser);
-rout.route("/login").get(loginUser);
+rout.route("/login").post(loginUser);
 rout.route("/logout").get(AuthenticationJWT, logoutUser);
 rout.route("/profile").get(AuthenticationJWT, getUserProfile);
 rout.route("/updateUser").put(AuthenticationJWT, updateUserProfile);

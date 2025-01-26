@@ -7,13 +7,19 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const options = {
-    expire: process.env.ACCESS_TOKEN_EXPIRY
-        ? process.env.ACCESS_TOKEN_EXPIRY * 24 * 60 * 60 * 1000
-        : 7 * 24 * 60 * 60 * 1000, // default to 7 days
+    expire: new Date(Date.now() +
+        (process.env.ACCESS_TOKEN_EXPIRY
+            ? process.env.ACCESS_TOKEN_EXPIRY * 24 * 60 * 60 * 1000
+            : 7 * 24 * 60 * 60 * 1000
+        )
+    ).toUTCString(),
+    maxAge: process.env.ACCESS_TOKEN_EXPIRY
+        ? process.env.ACCESS_TOKEN_EXPIRY * 24 * 60 * 60 * 1000 // Days in milliseconds
+        : 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Secure flag true only in production
-    sameSite: "strict",
-    path: "/",
+    secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
+    sameSite: "strict", // Uncomment this for CSRF protection
+    path: "/", // Uncomment this if you want the cookie accessible site-wide
 };
 
 export const createUser = asyncHandler(async (req, res) => {
@@ -66,7 +72,12 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
-    res.clearCookie("accessToken", options).json(new ApiResponse(200, null, "User logged out successfully.!"));
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+    }).json(new ApiResponse(200, req.user.userName, "User logged out successfully.!"));
 });
 
 export const getUserProfile = asyncHandler(async (req, res) => {

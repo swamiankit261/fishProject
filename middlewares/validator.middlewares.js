@@ -63,14 +63,15 @@ export const isOrder = [
     //     .bail()
     //     .isNumeric()
     //     .withMessage("Items price must be a number."),
-    // body("taxPrice", "Tax price must be a number.")
-    //     .optional()
-    //     .isNumeric(),
-    // body("shippingPrice", "Shipping price is required.")
-    //     .notEmpty()
-    //     .bail()
-    //     .isNumeric()
-    //     .withMessage("Shipping price must be a number."),
+    body("gst", "gst is required.")
+        .notEmpty().bail()
+        .isNumeric()
+        .withMessage("gst must be a number."),
+    body("shippingPrice", "Shipping price is required.")
+        .notEmpty()
+        .bail()
+        .isNumeric()
+        .withMessage("Shipping price must be a number."),
     // body("totalPrice", "Total price is required.")
     //     .notEmpty()
     //     .bail()

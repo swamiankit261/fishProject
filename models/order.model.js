@@ -11,27 +11,27 @@ const orderSchema = new mongoose.Schema(
             address: {
                 type: String,
                 minLength: [5, "address '{VALUE}' should have more than 5 characters!"],
-                maxLength: [50, "address cannot exceed 50 characters!"],
+                maxLength: [200, "address cannot exceed 200 characters!"],
                 required: [true, "Address is required"]
             },
             city: {
                 type: String,
                 minLength: [2, "city '{VALUE}' should have more than 2 characters"],
-                maxLength: [30, "city cannot exceed 30 characters"],
+                maxLength: [50, "city cannot exceed 50 characters"],
                 lowercase: true,
                 required: [true, "City is required"]
             },
             state: {
                 type: String,
                 minLength: [2, "state '{VALUE}' should have more than 2 characters"],
-                maxLength: [30, "state cannot exceed 30 characters"],
+                maxLength: [50, "state cannot exceed 50 characters"],
                 lowercase: true,
                 required: [true, "State is required"]
             },
             country: {
                 type: String,
                 minLength: [2, "country '{VALUE}' should have more than 2 characters"],
-                maxLength: [30, "country cannot exceed 30 characters"],
+                maxLength: [50, "country cannot exceed 50 characters"],
                 lowercase: true,
                 default: "USA", required: [true, "Country is required"]
             },
@@ -59,6 +59,9 @@ const orderSchema = new mongoose.Schema(
                     ref: 'Product',
                     required: true,
                 },
+                image: { type: String, required: [true, "image url is required"] },
+                size: { type: Number, required: [true, "size is required"] },
+                fishName: { type: String, required: [true, "String is required"] },
                 quantity: { type: Number, required: [true, "Quantity is required"] },
                 price: { type: Number, required: [true, "Price is required."] }
             }
@@ -90,7 +93,7 @@ const orderSchema = new mongoose.Schema(
             default: 0,
             required: [true, "Items price is required"]
         },
-        taxPrice: {
+        gst: {
             type: Number,
             default: 0,
             required: [true, "Tax price is required"]
@@ -122,7 +125,7 @@ const orderSchema = new mongoose.Schema(
 
 // Virtual for computed total price
 orderSchema.virtual('computedTotalPrice').get(function () {
-    return this.itemsPrice + this.taxPrice + this.shippingPrice;
+    return this.itemsPrice + this.gst + this.shippingPrice;
 });
 
 // Enable auto-populate plugin

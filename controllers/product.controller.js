@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { v2 as cloudinary } from "cloudinary";
+import mongoose from "mongoose";
 
 
 export const createProduct = asyncHandler(async (req, res) => {
@@ -24,10 +25,9 @@ export const createProduct = asyncHandler(async (req, res) => {
         price,
         countInStock,
         category,
-        size,
+        size: size.split(',').map(Number),
         images: [],
     };
-
 
 
     for (let index = 0; index < req.files.length; index++) {
@@ -91,7 +91,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
 export const searchAndFindProducts = asyncHandler(async (req, res) => {
 
-    const { page = 1, limit = 10, sort } = req.query;
+    const { page = 1, limit = 12, sort } = req.query;
 
     // Utility to build match conditions
     const buildMatchConditions = (query) => {
@@ -107,7 +107,7 @@ export const searchAndFindProducts = asyncHandler(async (req, res) => {
                 { size: { $regex: search, $options: "i" } }
             ];
             if (/^\d+(\.\d+)?$/.test(search)) {
-                conditions.$or.push({ price: Number(search) });
+                conditions.$or.push({ price: { $lte: Number(search) } });
             }
         };
 
@@ -125,12 +125,18 @@ export const searchAndFindProducts = asyncHandler(async (req, res) => {
 
     // Utility to build sorting criteria
     const buildSortCriteria = (sort) => {
-        const defaultSort = { price: 1, numOfReviews: -1, createdAt: -1 };
+        const defaultSort = { createdAt: -1, numOfReviews: -1 };
         if (!sort) return defaultSort;
-        const [key, value] = sort.split(":");
-        return { ...defaultSort, [key]: value === "desc" ? -1 : 1 };
-    };
 
+        const [key, value] = sort.split(":");
+
+        const newSort = { [key]: value === "desc" ? -1 : 1 };
+        if (key === "createdAt") {
+            return { ...defaultSort, ...newSort };
+        } else {
+            return { ...newSort, ...defaultSort };
+        }
+    };
 
 
     const matchConditions = buildMatchConditions(req.query);
@@ -145,6 +151,8 @@ export const searchAndFindProducts = asyncHandler(async (req, res) => {
     if (Object.keys(matchConditions).length > 0) {
         pipeline.push({ $match: matchConditions });
     };
+
+    // console.log(`Pipeline`, buildSortCriteria(sort))
 
     pipeline.push({
         $facet: {
@@ -173,7 +181,7 @@ export const searchAndFindProducts = asyncHandler(async (req, res) => {
     const [result] = await Product.aggregate(pipeline);
 
     const products = result.products;
-    const totalResults = result.totalResults[0].count;
+    const totalResults = result.totalResults[0]?.count;
 
     // Response
     res.status(200).json(new ApiResponse(200, {
@@ -182,6 +190,54 @@ export const searchAndFindProducts = asyncHandler(async (req, res) => {
         totalPages: Math.ceil(totalResults / cappedLimit),
         currentPage: parseInt(page, 10)
     }, "Products retrieved successfully!"));
+});
+
+export const homepageProduct = asyncHandler(async (req, res) => {
+    const products = await Product.find({}).limit(10).sort({ createdAt: -1 }).populate("user", "name email");
+    if (!products) throw new ApiError(404, "No products found.!");
+    res.status(200).json(new ApiResponse(200, products, "Home page products retrieved successfully.!"));
+});
+
+export const getAdminProducts = asyncHandler(async (req, res) => {
+    const { id } = req.body;
+    const { page = 1, limit = 10 } = req.query;
+
+    if (id && !/^[0-9a-fA-F]{24}$/.test(id)) {
+        throw new ApiError(404, "Please provide a valid ID.");
+    }
+
+    const pipelines = [];
+
+    if (id) {
+        pipelines.push({ $match: { _id: new mongoose.Types.ObjectId(id) } });
+    }
+
+    // Paginate results
+    const cappedLimit = Math.min(parseInt(limit, 10), 100); // Limit to a maximum of 100
+    const skip = (parseInt(page, 10) - 1) * cappedLimit;
+
+    pipelines.push(
+        { $sort: { numOfReviews: -1, createdAt: -1 } },
+        { $skip: skip },
+        { $limit: cappedLimit }
+    );
+
+    const results = await Product.aggregate(pipelines);
+
+    const totalDocuments = await Product.countDocuments();
+
+    const totalResults = id
+        ? results.length
+        : totalDocuments;
+
+    res.status(200).send(
+        new ApiResponse(200, {
+            results, totalDocuments,
+            totalResults,
+            totalPages: Math.ceil(totalResults / cappedLimit),
+            currentPage: parseInt(page, 10)
+        }, "Admin products fetched successfully!")
+    );
 });
 
 export const getProductById = asyncHandler(async (req, res) => {
@@ -198,9 +254,9 @@ export const getProductById = asyncHandler(async (req, res) => {
 
 
 export const deleteProduct = asyncHandler(async (req, res) => {
-    const { id } = req.body;
+    const { id } = req.params;
 
-    if (!/^[0-9a-fA-F]{24}$/.test(id)) throw new ApiError(400, "Please provide product valid ID.!");
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) throw new ApiError(400, "Please provide valid product ID.!");
     const product = await Product.findByIdAndDelete(id).select("images");
 
     if (!product) throw new ApiError(404, "Product not found.!");
