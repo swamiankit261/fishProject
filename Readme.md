@@ -129,16 +129,18 @@ mern-vite-project/
 
 ## Scripts
 
-### Backend Scripts
-
-- `npm run dev`: Start both backend and frontend.
-- `npm start`: Start the server in development mode with hot reloading.
 
 ### Frontend Scripts
 
 - `npm run dev`: Start the Vite development server.
 - `npm run build`: Build the React app for production.
 - `npm run preview`: Preview the production build.
+
+
+### Backend Scripts
+
+- `npm run dev`: Start both backend and frontend.
+- `npm start`: Start the server in development mode with hot reloading.
 
 ## Dependencies
 
@@ -170,10 +172,6 @@ mern-vite-project/
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
 
 ---
 
