@@ -61,6 +61,18 @@ const Collection = () => {
 
     };
 
+
+    function debounce(functionToCall, interval = 300) {
+        let timeOutId
+        return function (...args) {
+            const context = this
+            clearTimeout(timeOutId)
+            timeOutId = setTimeout(() => {
+                functionToCall.apply(context, args)
+            }, interval)
+        }
+    }
+
     const prev = () => {
         if (activePage > 1) setActivePage((prevPage) => prevPage - 1);
     };
@@ -75,11 +87,11 @@ const Collection = () => {
     };
 
     const handleRengeChange = (value) => {
-        setRangeValues(value)
+        setRangeValues(v => ({ ...v, ...value }))
     }
 
     const handlePriceFilter = (e) => {
-        setRangeValues((prevState) => ({ ...prevState, checked: e.target.checked }));
+        setRangeValues(v => ({ ...v, checked: e.target.checked }));
     }
     return (
         <>
@@ -110,7 +122,7 @@ const Collection = () => {
                     <div className={`border border-gray-300 pl-1 py-3 mt-6 hidden sm:block`}>
                         <p className='mb-3 text-sm font-medium pl-2 flex gap-2'><input type="checkbox" id='price' onChange={handlePriceFilter} /> <label htmlFor='price' className='cursor-pointer'>PRICE</label></p>
                         {/* <div className='flex flex-col gap-2 text-sm font-light text-gray-700'> */}
-                        <PriceRangeSlider min={50} max={15000} currencyText={"₹"} onChange={handleRengeChange} />
+                        <PriceRangeSlider min={50} max={15000} currencyText={"₹"} onChange={debounce(handleRengeChange)} />
                         {/* </div> */}
                     </div>
                 </div>

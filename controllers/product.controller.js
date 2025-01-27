@@ -233,13 +233,15 @@ export const getAdminProducts = asyncHandler(async (req, res) => {
     const totalResults = id
         ? results.length
         : totalDocuments;
+    const totalPages = Math.ceil(totalResults / cappedLimit);
+    const currentPage = parseInt(page, 10) <= totalPages ? parseInt(page, 10) : 1;
 
     res.status(200).send(
         new ApiResponse(200, {
             results, totalDocuments,
             totalResults,
-            totalPages: Math.ceil(totalResults / cappedLimit),
-            currentPage: parseInt(page, 10)
+            totalPages,
+            currentPage
         }, "Admin products fetched successfully!")
     );
 });

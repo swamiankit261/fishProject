@@ -181,11 +181,12 @@ export const getAllOrders = asyncHandler(async (req, res) => {
     const totalResults = results?.totalResults[0]?.count || 0;
     const orders = results?.orders || [];
     const totalPages = Math.ceil(totalResults / cappedLimit);
+    const currentPage = parseInt(page, 10) <= totalPages ? parseInt(page, 10) : 1;
 
     res.status(200).json(
         new ApiResponse(
             200,
-            { orders, totalResults, totalPages, currentPage: parseInt(page, 10) },
+            { orders, totalResults, totalPages, currentPage },
             "All orders retrieved successfully!"
         )
     );
