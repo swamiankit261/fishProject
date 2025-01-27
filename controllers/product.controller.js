@@ -183,12 +183,16 @@ export const searchAndFindProducts = asyncHandler(async (req, res) => {
     const products = result.products;
     const totalResults = result.totalResults[0]?.count;
 
+    const totalPages = Math.ceil(totalResults / cappedLimit);
+
+    const currentPage = parseInt(page, 10) <= totalPages ? parseInt(page, 10) : 1;
+
     // Response
     res.status(200).json(new ApiResponse(200, {
         products,
         totalResults,
-        totalPages: Math.ceil(totalResults / cappedLimit),
-        currentPage: parseInt(page, 10)
+        totalPages,
+        currentPage
     }, "Products retrieved successfully!"));
 });
 

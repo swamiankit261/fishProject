@@ -7,12 +7,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setProducts } from '../redux/features/product/productSlice'
 import { Button } from '@material-tailwind/react'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import PriceRangeSlider from '../components/PriceRangeSlider'
 const Collection = () => {
     const [category, setCategory] = useState();
     const [sortType, setSortType] = useState("createdAt:desc");
     const [activePage, setActivePage] = useState(1);
     const [totalPages, setTotalPages] = useState();
     // const [limit, setLimit] = useState(12);
+    const [rangeValues, setRangeValues] = useState({ min: 0, max: 15000 });
 
 
     const dispatch = useDispatch();
@@ -23,6 +25,8 @@ const Collection = () => {
 
     if (category) queryParams.append("category", category);
     queryParams.append("page", activePage);
+    if (rangeValues?.checked) queryParams.append("maxPrice", rangeValues.max)
+    if (rangeValues?.checked) queryParams.append("minPrice", rangeValues.min)
     // queryParams.append("limit", limit);
     queryParams.append("sort", sortType);
 
@@ -36,10 +40,10 @@ const Collection = () => {
     // console.log(data.data);
 
     const fatchProduct = () => {
-        if (data?.data?.products?.length > 0) {
+        if (data?.data) {
             dispatch(setProducts(data))
-            setActivePage(data?.data.currentPage)
             setTotalPages(data?.data.totalPages)
+            setActivePage(data?.data.currentPage)
         }
     }
 
@@ -57,12 +61,6 @@ const Collection = () => {
 
     };
 
-
-    // Toggle subcategory filter
-    const toggleSubCategory = (e) => {
-        setCategory(e.target.value)
-    }
-
     const prev = () => {
         if (activePage > 1) setActivePage((prevPage) => prevPage - 1);
     };
@@ -76,6 +74,13 @@ const Collection = () => {
         refetch()
     };
 
+    const handleRengeChange = (value) => {
+        setRangeValues(value)
+    }
+
+    const handlePriceFilter = (e) => {
+        setRangeValues((prevState) => ({ ...prevState, checked: e.target.checked }));
+    }
     return (
         <>
             <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
@@ -102,16 +107,11 @@ const Collection = () => {
                         ))}
                     </div>
                     {/* Subcategory filter */}
-                    <div className={`border border-gray-300 pl-5 py-3 mt-6 hidden sm:block`}>
-                        <p className='mb-3 text-sm font-medium'>TYPE</p>
-                        <div className='flex flex-col gap-2 text-sm font-light text-gray-700'>
-                            {['Platy', 'Betta fish', 'Shark'].map(subcategoryItem => (
-                                <p key={subcategoryItem} className='flex gap-2'>
-                                    <input className='w-3' id={subcategoryItem} value={subcategoryItem} type="checkbox" onChange={toggleSubCategory} />
-                                    <label className='cursor-pointer' htmlFor={subcategoryItem}>{subcategoryItem}</label>
-                                </p>
-                            ))}
-                        </div>
+                    <div className={`border border-gray-300 pl-1 py-3 mt-6 hidden sm:block`}>
+                        <p className='mb-3 text-sm font-medium pl-2 flex gap-2'><input type="checkbox" id='price' onChange={handlePriceFilter} /> <label htmlFor='price' className='cursor-pointer'>PRICE</label></p>
+                        {/* <div className='flex flex-col gap-2 text-sm font-light text-gray-700'> */}
+                        <PriceRangeSlider min={50} max={15000} currencyText={"₹"} onChange={handleRengeChange} />
+                        {/* </div> */}
                     </div>
                 </div>
 
@@ -134,8 +134,8 @@ const Collection = () => {
                     </div>
                 </div>
             </div>
-            <div className=" mt-10 mx-auto">
-                <div className="flex flex-wrap items-center justify-center gap-2 mx-auto w-full sm:w-3/4 lg:w-1/2">
+            <div className="mt-10 mx-auto">
+                {totalPages > 1 && <div className="flex flex-wrap items-center justify-center gap-2 mx-auto w-full sm:w-3/4 lg:w-1/2">
                     {/* Previous Button */}
                     <Button
                         variant="text"
@@ -177,7 +177,7 @@ const Collection = () => {
                         Next
                         <ArrowRightIcon strokeWidth={3} className="w-4 sm:w-5" />
                     </Button>
-                </div>
+                </div>}
             </div>
         </>
     )
