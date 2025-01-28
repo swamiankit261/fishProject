@@ -31,17 +31,16 @@ export const createUser = asyncHandler(async (req, res) => {
 
     if (existUsre) throw new ApiError(409, "User already exists.!");
 
-    let image;
-    if (avater) {
-        image = await UploadCloudinary(avater, "user");
-        console.info("Uploading image", image);
-    }
-
     const fields = {
         userName,
         email,
         password,
     };
+
+    let image;
+    if (avater) {
+        image = await UploadCloudinary(avater, "user");
+    }
 
     if (image) {
         fields.avater = {

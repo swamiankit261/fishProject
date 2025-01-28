@@ -10,17 +10,19 @@ const BestSeller = () => {
 
     const dispatch = useDispatch()
 
-    const { currentData } = useGetBestSellerProductQuery();
+    const { data } = useGetBestSellerProductQuery();
 
     const { bestSeller } = useSelector(store => store.products);
 
     const fatchData = () => {
-        dispatch(setBestSellerProducts(currentData))
+        dispatch(setBestSellerProducts(data?.data))
     }
+
+    console.log(bestSeller?.length > 0)
 
     useEffect(() => {
         fatchData()
-    }, [currentData]);
+    }, [data]);
 
     return (
         <div className='my-10'>
@@ -32,10 +34,10 @@ const BestSeller = () => {
             <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
 
                 {
-                    bestSeller && bestSeller.map((item) => {
+                    bestSeller?.length > 0 && bestSeller.map((item, index) => {
                         return (
                             <>
-                                <ProductItem key={item._id} id={item._id} image={item.images[0].path} name={item.fishName} category={item.category} price={item.price} />
+                                <ProductItem key={index} id={item._id} image={item.images[0].path} name={item.fishName} category={item.category} price={item.price} />
                             </>
                         )
                     }

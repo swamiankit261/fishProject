@@ -132,13 +132,10 @@ const Add = () => {
                         <div>
                             <p className='mb-2'>Product Category</p>
                             <select className='w-full px-3 py-2' onChange={(e) => setCategory(e.target.value)}>
-                                <option value="Exotic fishes">Exotic fishes</option>
-                                <option value="Aquarium Fishes">Aquarium Fishes</option>
-                                <option value="Fresh Water Fishes">Fresh Water Fishes</option>
-                                <option value="Pond Fishes">Pond Fishes</option>
-                                <option value="Monster Fishes">Monster Fishes</option>
-                                <option value="Marien Fishes">Marien Fishes</option>
+                                {['Exotic fishes', 'Aquarium Fishes', 'Fresh Water Fishes', 'Pond Fishes', 'Monster Fishes', 'Marien Fishes'].map((category) => {
 
+                                    return <option key={category} value={category}>{category}</option>
+                                })}
                             </select>
                         </div>
 

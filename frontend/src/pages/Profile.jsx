@@ -1,5 +1,9 @@
+import { useSelector } from "react-redux"
 
 const Profile = () => {
+
+    const { userInfo } = useSelector(store => store.auth);
+
     return (
         <>
             <section className="py-10 my-auto dark:bg-gray-900">
@@ -15,10 +19,9 @@ const Profile = () => {
                             <form>
                                 {/* <!-- Cover Image --> */}
                                 <div
-                                    className="w-full rounded-sm bg-[url('https://images.unsplash.com/photo-1449844908441-8829872d2607?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw2fHxob21lfGVufDB8MHx8fDE3MTA0MDE1NDZ8MA&ixlib=rb-4.0.3&q=80&w=1080')] bg-cover bg-center bg-no-repeat items-center">
+                                    className="w-full rounded-sm bg-[url('https://i.pinimg.com/736x/f4/46/fe/f446fea20e0ffdc9182c9ff183d4d061.jpg')] bg-cover bg-center bg-no-repeat items-center">
                                     {/* <!-- Profile Image --> */}
-                                    <div
-                                        className="mx-auto flex justify-center w-[141px] h-[141px] bg-blue-300/20 rounded-full bg-[url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw4fHxwcm9maWxlfGVufDB8MHx8fDE3MTEwMDM0MjN8MA&ixlib=rb-4.0.3&q=80&w=1080')] bg-cover bg-center bg-no-repeat">
+                                    <div className="mx-auto flex justify-center w-[141px] h-[141px] bg-blue-300/20 rounded-full bg-[url('https://i.pinimg.com/736x/41/24/8a/41248af5447eb4aa9622115912300f41.jpg')] bg-cover bg-center bg-no-repeat">
 
                                         <div className="bg-white/90 rounded-full w-6 h-6 text-center ml-28 mt-4">
 
@@ -67,6 +70,7 @@ const Profile = () => {
                                         <label htmlFor="username" className="mb-2 dark:text-gray-300">FullName</label>
                                         <input type="text"
                                             id="username"
+                                            defaultValue={userInfo?.userName}
                                             className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800"
                                             placeholder="First Name" />
                                     </div>
@@ -75,6 +79,7 @@ const Profile = () => {
                                         <input type="email"
                                             disabled
                                             id="email"
+                                            defaultValue={userInfo?.email}
                                             className="mt-2 p-4 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800"
                                             placeholder="email" />
                                     </div>

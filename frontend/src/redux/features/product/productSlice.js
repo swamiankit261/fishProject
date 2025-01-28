@@ -21,7 +21,7 @@ const productSlice = createSlice({
             state.homeProducts = action.payload.data
         },
         setBestSellerProducts: (state, action) => {
-            state.bestSeller = action.payload?.data
+            state.bestSeller = action.payload
         },
         setAdminProducts: (state, action) => {
             state.adminProducts = action.payload;
