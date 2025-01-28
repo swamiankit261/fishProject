@@ -32,7 +32,7 @@ const Latest_collection = () => {
             {/* rendring products */}
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
                 {
-                    homeProducts.map((item, index) => (
+                    homeProducts.map((item) => (
                         <>
                             <ProductItem key={item._id} id={item._id} image={item.images[0].path} name={item.fishName} category={item.category} price={item.price} />
                         </>

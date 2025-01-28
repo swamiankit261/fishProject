@@ -19,7 +19,7 @@ const Add = () => {
     const [price, setPrice] = useState(false)
     const [sizes, setSizes] = useState([])
     const [currentSize, setCurrentSize] = useState('');
-    const [bestSeller, setBestSeller] = useState([])
+    const [bestSeller, setBestSeller] = useState(false);
 
 
     const navigate = useNavigate();
@@ -179,8 +179,8 @@ const Add = () => {
                         <input className='w-full px-3 py-2 sm:w-[120px]' required value={countInStock} onChange={(e) => setCountInStock(e.target.value)} type="number" placeholder='stock' />
                     </div>
                     <div className='flex gap-2 mt-2'>
-                        <input onChange={() => { setBestSeller(pre => !pre) }} checked={bestSeller} type="checkbox" name="" id="bestseller" />
-                        <label className='cursor-pointer' htmlFor="bestseller">Add to best seller</label>
+                        <input onChange={() => { setBestSeller(pre => !pre) }} checked={bestSeller} type="checkbox" name="bestSeller" id="bestSeller" />
+                        <label className='cursor-pointer' htmlFor="bestSeller">Add to best seller</label>
                     </div>
                     {isLoading ? <Button type="submit" className="bg-black text-white px-16 py-3 text-sm mt-4 ..." >
                         Processing <span className='bg-yellow-400 animate-bounce ml-1 p-1 rounded-full inline-flex'></span>

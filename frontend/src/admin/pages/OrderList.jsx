@@ -24,7 +24,6 @@ const OrderList = () => {
     const fetchAllOrder = () => {
         if (data && !isLoading) {
             dispatch(addAdminOrder(data));
-            console.log("Fetching all", data)
         }
     };
 
@@ -34,13 +33,6 @@ const OrderList = () => {
             const response = await updateOrder({ id: orderId, orderStatus: updatedStatus }).unwrap();
 
             if (response?.success) {
-                // const updatedOrders = adminOrders.orders.map((order) => {
-                //     if (order._id === orderId) {
-                //         return { ...order, orderStatus: updatedStatus };
-                //     }
-                //     return order;
-                // });
-                // dispatch(addAdminOrder({ orders: updatedOrders }));
                 refetch()
                 toast.success("Order status updated successfully.");
             } else {
@@ -56,23 +48,23 @@ const OrderList = () => {
         fetchAllOrder();
     }, [data]);
 
-    const prev = () => {
-        if (activePage > 1) setActivePage((prevPage) => prevPage - 1);
-    };
 
-    const next = () => {
-        if (activePage < adminOrders?.totalPages) setActivePage((prevPage) => prevPage + 1);
+    const prevAndNextPages = (value) => {
+        if (value === "prev") {
+            if (activePage > 1) setActivePage((prevPage) => prevPage - 1);
+        } else {
+            if (activePage < adminOrders?.totalPages) setActivePage((prevPage) => prevPage + 1);
+        }
     };
 
     const toggleSearchCategory = (e) => {
         if (searchStatus === e.target.value) {
             setSearchStatus('');
-            // refetch();
         } else {
             setSearchStatus(e.target.value);
-            // refetch();
+            setActivePage(1);
         }
-    }
+    };
 
     return (
         <div className="flex w-full">
@@ -84,7 +76,7 @@ const OrderList = () => {
                         <Button
                             variant="text"
                             className="flex items-center gap-2"
-                            onClick={prev}
+                            onClick={() => prevAndNextPages("prev")}
                             disabled={activePage === 1}
                         >
                             <ArrowLeftIcon strokeWidth={3} className="w-4 sm:w-5" /> Previous
@@ -92,7 +84,7 @@ const OrderList = () => {
                         <Button
                             variant="text"
                             className="flex items-center gap-2"
-                            onClick={next}
+                            onClick={() => prevAndNextPages("next")}
                             disabled={activePage === adminOrders?.totalPages}
                         >
                             Next

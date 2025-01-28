@@ -26,6 +26,12 @@ const productApiSlice = apiSlice.injectEndpoints({
             // transformResponse: (response) => response.data,
             providesTags: ['Home'],
         }),
+        getBestSellerProduct: builder.query({
+            query: () => ({
+                url: `${PRODUCT_URL}/bestSeller`,
+                method: 'GET',
+            })
+        }),
         fatchProductByAdmin: builder.query({
             query: (QueryParams) => ({
                 url: `${PRODUCT_URL}/adminProduct/?${QueryParams}`,
@@ -59,5 +65,5 @@ const productApiSlice = apiSlice.injectEndpoints({
 })
 
 
-export const { useFetchProductsQuery, useFetchProductByIdQuery, useGetHomeProductQuery,
+export const { useFetchProductsQuery, useFetchProductByIdQuery, useGetHomeProductQuery, useGetBestSellerProductQuery,
     useFatchProductByAdminQuery, useCreateProductMutation, useUpdateProductMutation, useDeleteProductMutation } = productApiSlice;

@@ -1,20 +1,26 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useContext, useEffect, useState } from 'react'
-import { ShopContext } from '../context/ShopContext'
+import React, { useEffect } from 'react'
 import Title from './Title'
 import ProductItem from './Productitem'
+import { useGetBestSellerProductQuery } from '../redux/api/product'
+import { useDispatch, useSelector } from 'react-redux'
+import { setBestSellerProducts } from '../redux/features/product/productSlice'
 
 const BestSeller = () => {
-    const { products } = useContext(ShopContext)
-    const [bestSeller, setBestSeller] = useState([])
+
+    const dispatch = useDispatch()
+
+    const { currentData } = useGetBestSellerProductQuery();
+
+    const { bestSeller } = useSelector(store => store.products);
+
+    const fatchData = () => {
+        dispatch(setBestSellerProducts(currentData))
+    }
+
     useEffect(() => {
-        // console.log(products);
-
-        const bestProduct = products.filter((myitem) => (myitem.bestseller))
-        setBestSeller(bestProduct.slice(0, 5))
-    }, [])
-
-    // console.log("best", bestSeller);
+        fatchData()
+    }, [currentData]);
 
     return (
         <div className='my-10'>
@@ -26,10 +32,10 @@ const BestSeller = () => {
             <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
 
                 {
-                    bestSeller.map((item) => {
+                    bestSeller && bestSeller.map((item) => {
                         return (
                             <>
-                                <ProductItem key={item._id} id={item._id} image={item.image} name={item.name} price={item.price} />
+                                <ProductItem key={item._id} id={item._id} image={item.images[0].path} name={item.fishName} category={item.category} price={item.price} />
                             </>
                         )
                     }

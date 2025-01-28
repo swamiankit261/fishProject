@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
 
-const ProductItem = ({ id, image, name, price, category }) => {
+const ProductItem = (props) => {
+
+    const { id, image, name, price, category } = props || {};
+    
     return (
         <Link className='text-gray-700 cursor-pointer' to={`/product/${id}`}>
             <div className='overflow-hidden'>

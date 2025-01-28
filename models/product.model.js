@@ -80,6 +80,10 @@ const productSchema = new mongoose.Schema(
             type: Number,
             default: 0
         },
+        bestSeller: {
+            type: Boolean,
+            default: false
+        },
         reviews: {
             type: [reviews]
         }

@@ -7,7 +7,9 @@ import mongoose from "mongoose";
 
 
 export const createProduct = asyncHandler(async (req, res) => {
-    const { fishName, description, price, countInStock, category, size } = req.body;
+    const { fishName, description, price, countInStock, category, size, bestSeller } = req.body;
+
+    console.log(bestSeller)
 
     const requiredFields = [fishName, description, price, countInStock, category, size].every(
         (item) => item !== null && item !== undefined && item !== ""
@@ -28,6 +30,10 @@ export const createProduct = asyncHandler(async (req, res) => {
         size: size.split(',').map(Number),
         images: [],
     };
+
+    if (bestSeller) {
+        fields.bestSeller = bestSeller;
+    }
 
 
     for (let index = 0; index < req.files.length; index++) {
@@ -200,6 +206,12 @@ export const homepageProduct = asyncHandler(async (req, res) => {
     const products = await Product.find({}).limit(10).sort({ createdAt: -1 }).populate("user", "name email");
     if (!products) throw new ApiError(404, "No products found.!");
     res.status(200).json(new ApiResponse(200, products, "Home page products retrieved successfully.!"));
+});
+
+export const bestSellerProduct = asyncHandler(async (_, res) => {
+    const products = await Product.find({ bestSeller: true }).sort({ createdAt: -1 }).limit(10);
+
+    res.status(200).json(new ApiResponse(200, products, "bestSeller products retrieved successfully"))
 });
 
 export const getAdminProducts = asyncHandler(async (req, res) => {

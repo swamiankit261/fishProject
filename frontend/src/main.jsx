@@ -18,6 +18,7 @@ import List from './admin/pages/List.jsx';
 import Add from './admin/Add.jsx';
 import OrderList from "./admin/pages/OrderList.jsx"
 import { ThemeProvider } from "@material-tailwind/react";
+import Profile from './pages/Profile.jsx';
 
 
 const router = createBrowserRouter(
@@ -29,6 +30,9 @@ const router = createBrowserRouter(
         <Route path='/cart' element={<Cart />} />
         <Route path='/admin/add' element={<Add />} />
         <Route path='/admin/orderslist' element={<OrderList />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path='/orders' element={<Orders />} />
+        <Route path='/place-order' element={<PlaceOrder />} />
       </Route>
       <Route element={<PrivateRoutes />} >
         <Route path='/admin' element={<List />} />
@@ -37,8 +41,6 @@ const router = createBrowserRouter(
       <Route path='/contact' element={<Contact />} />
       <Route path='/product/:productId' element={<Product />} />
       <Route path='/login' element={<Login />} />
-      <Route path='/place-order' element={<PlaceOrder />} />
-      <Route path='/orders' element={<Orders />} />
       <Route path="*" element={<div className='text-3xl font-serif font-semibold text-center animate-bounce'>Page not found...</div>} />
     </Route>
   )

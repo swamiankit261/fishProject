@@ -10,7 +10,6 @@ const Orders = () => {
 
     const { orders } = useSelector(store => store.orders);
 
-    console.info('orders', orders);
 
     useEffect(() => {
         if (data) { dispatch(addOrder(data)) }

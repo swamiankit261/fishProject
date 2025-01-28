@@ -70,7 +70,7 @@ const Navbar = (props) => {
                     <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4 bg-gray-50 rounded'>
                         <div className='flex flex-col gap-2 w-36 py-3 px-5 text-gray-700 bg-slate-100 z-30 rounded'>
                             {userInfo?.role === "admin" && <NavLink className='cursor-pointer hover:text-black' to='/admin'>Admin panal</NavLink>}
-                            <p className='cursor-pointer hover:text-black'>My profile</p>
+                            <NavLink to={"/profile"} className='cursor-pointer hover:text-black'>My profile</NavLink>
                             <NavLink className='cursor-pointer hover:text-black' to='/orders'>Orders</NavLink>
 
                             {userInfo ? <NavLink className='cursor-pointer hover:text-black' to='/login' onClick={handleLogout}>Logout</NavLink>

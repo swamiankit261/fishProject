@@ -55,12 +55,12 @@ const List = () => {
 
 
     // Handlers for previous and next buttons
-    const prev = () => {
-        if (activePage > 1) setActivePage((prevPage) => prevPage - 1);
-    };
-
-    const next = () => {
-        if (activePage < totalPages) setActivePage((prevPage) => prevPage + 1);
+    const prevAndNextPages = (value) => {
+        if (value === "prev") {
+            if (activePage > 1) setActivePage((prevPage) => prevPage - 1);
+        } else {
+            if (activePage < totalPages) setActivePage((prevPage) => prevPage + 1);
+        }
     };
 
     return (
@@ -74,7 +74,7 @@ const List = () => {
                             <Button
                                 variant="text"
                                 className="flex items-center gap-2"
-                                onClick={prev}
+                                onClick={() => prevAndNextPages("prev")}
                                 disabled={activePage === 1}
                             >
                                 <ArrowLeftIcon strokeWidth={3} className="w-4 sm:w-5" /> Previous
@@ -82,7 +82,7 @@ const List = () => {
                             <Button
                                 variant="text"
                                 className="flex items-center gap-2"
-                                onClick={next}
+                                onClick={() => prevAndNextPages("next")}
                                 disabled={activePage === totalPages}
                             >
                                 Next
