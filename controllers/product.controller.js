@@ -6,47 +6,51 @@ import { v2 as cloudinary } from "cloudinary";
 import mongoose from "mongoose";
 
 
-export const createProduct = asyncHandler(async (req, res) => {
-    const { fishName, description, price, countInStock, category, size, bestSeller } = req.body;
-
-    console.log(bestSeller)
-
-    const requiredFields = [fishName, description, price, countInStock, category, size].every(
-        (item) => item !== null && item !== undefined && item !== ""
-    );
+export const createProduct = asyncHandler(async (req, res, next) => {
+    try {
+        const { fishName, description, price, countInStock, category, size, bestSeller } = req.body;
 
 
-    if (!requiredFields) throw new ApiError(400, "give all required fields.!");
+        const requiredFields = [fishName, description, price, countInStock, category, size].every(
+            (item) => item !== null && item !== undefined && item !== ""
+        );
 
-    if (!req.files || req.files.length === 0) throw new ApiError(400, "please provide images.!");
 
-    const fields = {
-        fishName,
-        description,
-        user: req.user._id,
-        price,
-        countInStock,
-        category,
-        size: size.split(',').map(Number),
-        images: [],
-    };
+        if (!requiredFields) throw new ApiError(400, "give all required fields.!");
 
-    if (bestSeller) {
-        fields.bestSeller = bestSeller;
+        if (!req.files || req.files.length === 0) throw new ApiError(400, "please provide images.!");
+
+        const fields = {
+            fishName,
+            description,
+            user: req.user._id,
+            price,
+            countInStock,
+            category,
+            size: size.split(',').map(Number),
+            images: [],
+        };
+
+        if (bestSeller) {
+            fields.bestSeller = bestSeller;
+        }
+
+
+        for (let index = 0; index < req.files.length; index++) {
+            const element = req.files[index];
+            fields.images.push({
+                path: element.path,
+                filename: element.filename,
+            });
+        }
+
+        const product = await Product.create(fields);
+
+        res.status(201).json(new ApiResponse(201, product, "product created successfully.!"));
+    } catch (error) {
+        next(error);
+        req.files.forEach(async (file) => await cloudinary.uploader.destroy(file.filename));
     }
-
-
-    for (let index = 0; index < req.files.length; index++) {
-        const element = req.files[index];
-        fields.images.push({
-            path: element.path,
-            filename: element.filename,
-        });
-    }
-
-    const product = await Product.create(fields);
-
-    res.status(201).json(new ApiResponse(201, product, "product created successfully.!"));
 });
 
 export const updateProduct = asyncHandler(async (req, res) => {

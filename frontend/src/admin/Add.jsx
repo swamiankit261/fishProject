@@ -87,116 +87,187 @@ const Add = () => {
 
 
     return (
-        <div className='flex w-full'>
-            <Sidebar />
-            <div className='w-[70%] mx-auto ml-[max(5vw,25px)] my-8 text-gray-600 text-base '>
-
-                <form onSubmit={onsubmitHandler} className='flex flex-col w-full items-start gap-3'>
-                    <div>
-                        <p className='mb-2'>Upload image</p>
-                        <div className='flex gap-3'>
-                            <label htmlFor="image1">
-                                <img className='w-20' src={!image1 ? assets.upload_area : URL.createObjectURL(image1)} alt="" />
-                                <input type="file" onChange={(e) => setImage1(e.target.files[0])} id='image1' hidden />
-                            </label>
-
-                            <label htmlFor="image2">
-                                <img className='w-20' src={!image2 ? assets.upload_area : URL.createObjectURL(image2)} alt="" />
-                                <input type="file" onChange={(e) => setImage2(e.target.files[0])} id='image2' hidden />
-                            </label>
-
-                            <label htmlFor="image3">
-                                <img className='w-20' src={!image3 ? assets.upload_area : URL.createObjectURL(image3)} alt="" />
-                                <input type="file" id='image3' onChange={(e) => setImage3(e.target.files[0])} hidden />
-                            </label>
-
-                            <label htmlFor="image4">
-                                <img className='w-20' src={!image4 ? assets.upload_area : URL.createObjectURL(image4)} alt="" />
-                                <input type="file" id='image4' onChange={(e) => setImage4(e.target.files[0])} hidden />
-                            </label>
-                        </div>
-
+        isLoading == true ? (<div className='flex w-full'>
+            <Sidebar /> {/* Assuming Sidebar has its own skeleton */}
+            <div className='w-[70%] mx-auto ml-[max(5vw,25px)] my-8 animate-pulse'>
+                {/* Image Upload Section */}
+                <div className='flex flex-col gap-3 mb-6'>
+                    <div className='h-4 bg-gray-200 w-24 mb-2 rounded'></div>
+                    <div className='flex gap-3'>
+                        {[1, 2, 3, 4].map((i) => (
+                            <div key={i} className='w-20 h-20 bg-gray-200 rounded'></div>
+                        ))}
                     </div>
+                </div>
 
-                    <div className='w-full'>
-                        <p className='mb-2'>Product name</p>
-                        <input className='w-full max-w-[500px] px-3  py-2' onChange={(e) => setName(e.target.value)} value={name} type="text" placeholder='Type here' required />
-                    </div>
+                {/* Product Name */}
+                <div className='mb-6'>
+                    <div className='h-4 bg-gray-200 w-32 mb-2 rounded'></div>
+                    <div className='h-8 bg-gray-200 w-full max-w-[500px] rounded'></div>
+                </div>
 
-                    <div className='w-full'>
-                        <p className='mb-2'>Product desc</p>
-                        <textarea className='w-full max-w-[500px] px-3  py-2' onChange={(e) => setDescription(e.target.value)} value={description} type="text" placeholder='Write content here' required />
-                    </div>
+                {/* Product Description */}
+                <div className='mb-6'>
+                    <div className='h-4 bg-gray-200 w-32 mb-2 rounded'></div>
+                    <div className='h-20 bg-gray-200 w-full max-w-[500px] rounded'></div>
+                </div>
 
-                    <div className='flex flex-col sm:flex-row gap-2 w-full sm:gap-8'>
-                        <div>
-                            <p className='mb-2'>Product Category</p>
-                            <select className='w-full px-3 py-2' onChange={(e) => setCategory(e.target.value)}>
-                                {['Exotic fishes', 'Aquarium Fishes', 'Fresh Water Fishes', 'Pond Fishes', 'Monster Fishes', 'Marien Fishes'].map((category) => {
-
-                                    return <option key={category} value={category}>{category}</option>
-                                })}
-                            </select>
-                        </div>
-
-                        <div>
-                            <p className='mb-2'>Product Price</p>
-                            <input className='w-full px-3 py-2 sm:w-[120px]' value={price} onChange={(e) => setPrice(e.target.value)} type="number" placeholder='price' />
-                        </div>
-
+                {/* Category & Price Row */}
+                <div className='flex flex-col sm:flex-row gap-8 mb-6'>
+                    <div className='flex-1'>
+                        <div className='h-4 bg-gray-200 w-32 mb-2 rounded'></div>
+                        <div className='h-10 bg-gray-200 rounded'></div>
                     </div>
                     <div>
-                        <p className='mb-2'>Product Sizes</p>
-                        <input
-                            className='w-full px-3 py-2 sm:w-[120px] mr-2'
-                            value={currentSize}
-                            min={0}
-                            onChange={(e) => setCurrentSize(e.target.value)}
-                            type="number"
-                            placeholder='5'
-                        />
-                        <Button type='button'
-                            className=''
-                            size='sm'
-                            onClick={handleAddSize}
-                        >
-                            Add sizes
-                        </Button>
+                        <div className='h-4 bg-gray-200 w-32 mb-2 rounded'></div>
+                        <div className='h-10 bg-gray-200 w-[120px] rounded'></div>
                     </div>
-                    <div>
-                        <h3>Added Sizes:</h3>
-                        <div className="flex">
-                            {sizes.map((siz, i) => (
-                                <IconButton className='mb-2 bg-red-300 mr-2 p-1 rounded' key={i}>{siz}</IconButton>
-                            ))}
-                        </div>
-                    </div>
-                    <div>
-                        <p className='mb-2'>Product stock</p>
-                        <input className='w-full px-3 py-2 sm:w-[120px]' required value={countInStock} onChange={(e) => setCountInStock(e.target.value)} type="number" placeholder='stock' />
-                    </div>
-                    <div className='flex gap-2 mt-2'>
-                        <input onChange={() => { setBestSeller(pre => !pre) }} checked={bestSeller} type="checkbox" name="bestSeller" id="bestSeller" />
-                        <label className='cursor-pointer' htmlFor="bestSeller">Add to best seller</label>
-                    </div>
-                    {isLoading ? <Button type="submit" className="bg-black text-white px-16 py-3 text-sm mt-4 ..." >
-                        Processing <span className='bg-yellow-400 animate-bounce ml-1 p-1 rounded-full inline-flex'></span>
-                        <span className='bg-green-400 p-1 mx-1 animate-bounce rounded-full inline-flex'></span>
-                        <span className='bg-green-400 p-1 animate-bounce rounded-full inline-flex'></span>
-                    </Button>
-                        :
-                        <Button
-                            type="submit"
-                            className="bg-black text-white px-16 py-3 text-sm mt-4"
-                        // disabled={isSubmitting}
-                        >
-                            submit
-                        </Button>}
-                    {/* <button className='w-28 py-3 mt-4 bg-black text-white'>submit</button> */}
-                </form>
+                </div>
 
+                {/* Sizes Section */}
+                <div className='mb-6'>
+                    <div className='h-4 bg-gray-200 w-32 mb-2 rounded'></div>
+                    <div className='flex gap-2'>
+                        <div className='h-10 bg-gray-200 w-[120px] rounded'></div>
+                        <div className='h-10 bg-gray-200 w-20 rounded'></div>
+                    </div>
+                    <div className='flex mt-2'>
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className='w-8 h-8 bg-gray-200 rounded-full mr-2'></div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Stock */}
+                <div className='mb-6'>
+                    <div className='h-4 bg-gray-200 w-32 mb-2 rounded'></div>
+                    <div className='h-10 bg-gray-200 w-[120px] rounded'></div>
+                </div>
+
+                {/* Best Seller */}
+                <div className='flex gap-2 mt-2 mb-6'>
+                    <div className='w-4 h-4 bg-gray-200 rounded'></div>
+                    <div className='h-4 bg-gray-200 w-32 rounded'></div>
+                </div>
+
+                {/* Submit Button */}
+                <div className='h-12 bg-gray-200 w-32 rounded'></div>
             </div>
-        </div>
+        </div>)
+            :
+            (
+                <div className='flex w-full'>
+                    <Sidebar />
+                    <div className='w-[70%] mx-auto ml-[max(5vw,25px)] my-8 text-gray-600 text-base '>
+
+                        <form onSubmit={onsubmitHandler} className='flex flex-col w-full items-start gap-3'>
+                            <div>
+                                <p className='mb-2'>Upload image</p>
+                                <div className='flex gap-3'>
+                                    <label htmlFor="image1">
+                                        <img className='w-20' src={!image1 ? assets.upload_area : URL.createObjectURL(image1)} alt="" />
+                                        <input type="file" onChange={(e) => setImage1(e.target.files[0])} id='image1' hidden />
+                                    </label>
+
+                                    <label htmlFor="image2">
+                                        <img className='w-20' src={!image2 ? assets.upload_area : URL.createObjectURL(image2)} alt="" />
+                                        <input type="file" onChange={(e) => setImage2(e.target.files[0])} id='image2' hidden />
+                                    </label>
+
+                                    <label htmlFor="image3">
+                                        <img className='w-20' src={!image3 ? assets.upload_area : URL.createObjectURL(image3)} alt="" />
+                                        <input type="file" id='image3' onChange={(e) => setImage3(e.target.files[0])} hidden />
+                                    </label>
+
+                                    <label htmlFor="image4">
+                                        <img className='w-20' src={!image4 ? assets.upload_area : URL.createObjectURL(image4)} alt="" />
+                                        <input type="file" id='image4' onChange={(e) => setImage4(e.target.files[0])} hidden />
+                                    </label>
+                                </div>
+
+                            </div>
+
+                            <div className='w-full'>
+                                <p className='mb-2'>Product name</p>
+                                <input className='w-full max-w-[500px] px-3  py-2' onChange={(e) => setName(e.target.value)} value={name} type="text" placeholder='Type here' required />
+                            </div>
+
+                            <div className='w-full'>
+                                <p className='mb-2'>Product desc</p>
+                                <textarea className='w-full max-w-[500px] px-3  py-2' onChange={(e) => setDescription(e.target.value)} value={description} type="text" placeholder='Write content here' required />
+                            </div>
+
+                            <div className='flex flex-col sm:flex-row gap-2 w-full sm:gap-8'>
+                                <div>
+                                    <p className='mb-2'>Product Category</p>
+                                    <select className='w-full px-3 py-2' onChange={(e) => setCategory(e.target.value)}>
+                                        {['Exotic fishes', 'Aquarium Fishes', 'Fresh Water Fishes', 'Pond Fishes', 'Monster Fishes', 'Marien Fishes'].map((category) => {
+
+                                            return <option key={category} value={category}>{category}</option>
+                                        })}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <p className='mb-2'>Product Price</p>
+                                    <input className='w-full px-3 py-2 sm:w-[120px]' value={price} onChange={(e) => setPrice(e.target.value)} type="number" placeholder='price' />
+                                </div>
+
+                            </div>
+                            <div>
+                                <p className='mb-2'>Product Sizes</p>
+                                <input
+                                    className='w-full px-3 py-2 sm:w-[120px] mr-2'
+                                    value={currentSize}
+                                    min={0}
+                                    onChange={(e) => setCurrentSize(e.target.value)}
+                                    type="number"
+                                    placeholder='5'
+                                />
+                                <Button type='button'
+                                    className=''
+                                    size='sm'
+                                    onClick={handleAddSize}
+                                >
+                                    Add sizes
+                                </Button>
+                            </div>
+                            <div>
+                                <h3>Added Sizes:</h3>
+                                <div className="flex">
+                                    {sizes.map((siz, i) => (
+                                        <IconButton className='mb-2 bg-red-300 mr-2 p-1 rounded' key={i}>{siz}</IconButton>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <p className='mb-2'>Product stock</p>
+                                <input className='w-full px-3 py-2 sm:w-[120px]' required value={countInStock} onChange={(e) => setCountInStock(e.target.value)} type="number" placeholder='stock' />
+                            </div>
+                            <div className='flex gap-2 mt-2'>
+                                <input onChange={() => { setBestSeller(pre => !pre) }} checked={bestSeller} type="checkbox" name="bestSeller" id="bestSeller" />
+                                <label className='cursor-pointer' htmlFor="bestSeller">Add to best seller</label>
+                            </div>
+                            {isLoading ? <Button type="submit" className="bg-black text-white px-16 py-3 text-sm mt-4 ..." >
+                                Processing <span className='bg-yellow-400 animate-bounce ml-1 p-1 rounded-full inline-flex'></span>
+                                <span className='bg-green-400 p-1 mx-1 animate-bounce rounded-full inline-flex'></span>
+                                <span className='bg-green-400 p-1 animate-bounce rounded-full inline-flex'></span>
+                            </Button>
+                                :
+                                <Button
+                                    type="submit"
+                                    className="bg-black text-white px-16 py-3 text-sm mt-4"
+                                // disabled={isSubmitting}
+                                >
+                                    submit
+                                </Button>}
+                            {/* <button className='w-28 py-3 mt-4 bg-black text-white'>submit</button> */}
+                        </form>
+
+                    </div>
+                </div>
+            )
+
     )
 }
 
