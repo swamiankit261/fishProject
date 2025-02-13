@@ -29,8 +29,8 @@ export const isOrder = [
     body("paymentMethod", "Payment method is required.")
         .notEmpty()
         .bail()
-        .isIn(['Phone pay', 'Stripe', 'Cash on delivery'])
-        .withMessage("Payment method must be 'Phone pay', 'Stripe', or 'Cash on delivery'."),
+        .isIn(['UPI', 'Stripe', 'Cash on delivery'])
+        .withMessage("Payment method must be 'UPI', 'Stripe', or 'Cash on delivery'."),
     body("paymentInfo")
         .optional()
         .notEmpty()
@@ -41,6 +41,8 @@ export const isOrder = [
     body("paymentInfo.status", "Payment status is required.")
         .optional()
         .notEmpty(),
+    body("paymentInfo.paymentId", "Payment ID is required.").optional().notEmpty(),
+    body("paymentInfo.phoneNo", "Payment phoneNo is required.").optional().notEmpty(),
     // body("paidAt")
     //     .optional()
     //     .isDate()

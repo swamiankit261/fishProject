@@ -27,20 +27,25 @@ const OrderList = () => {
         }
     };
 
-    const statusHandler = async (orderId, event) => {
+    const statusHandler = async (orderId, event, status) => {
         try {
             const updatedStatus = event.target.value;
-            const response = await updateOrder({ id: orderId, orderStatus: updatedStatus }).unwrap();
+            let response;
+            if (status === "deliveryStatus") {
+                response = await updateOrder({ id: orderId, orderStatus: updatedStatus }).unwrap();
+            } else if (status === "paymentStatus") {
+                response = await updateOrder({ id: orderId, paymentStatus: updatedStatus }).unwrap();
+            }
 
             if (response?.success) {
-                refetch()
-                toast.success("Order status updated successfully.");
+                refetch();
+                toast.success(`${response?.message}`);
             } else {
                 toast.error(response?.data?.message || "Failed to update order status.");
             }
         } catch (error) {
             console.error("Error updating status:", error);
-            toast.error(error?.data?.message || "An error occurred.");
+            toast.error(error?.data?.message || error.message || "An error occurred.");
         }
     };
 
@@ -65,6 +70,7 @@ const OrderList = () => {
             setActivePage(1);
         }
     };
+
 
     return (
         <div className="flex w-full">
@@ -101,7 +107,7 @@ const OrderList = () => {
                             {adminOrders?.orders?.map((order) => (
                                 <div
                                     key={order._id}
-                                    className="grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700"
+                                    className="grid grid-cols-1 sm:grid-cols-[0.1fr_2fr_1fr] lg:grid-cols-[0.1fr_2fr_2fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700"
                                 >
                                     <img src={assets.parcel_icon} alt="Parcel Icon" />
                                     <div>
@@ -130,22 +136,43 @@ const OrderList = () => {
                                     <div>
                                         <p className="text sm:text-[15px]">Items: {order?.orderItems?.length}</p>
                                         <p className="mt-3">Method: {order?.paymentMethod}</p>
-                                        <p>Payment: {order?.paidAt ? <span className={`${order?.paidAt ? "text-green-600" : ""}`}>Done</span> : "Pending"}</p>
+                                        <p>paidAt: {new Date(order?.paidAt).toLocaleDateString()}</p>
                                         <p>Ordered Date: {new Date(order?.createdAt).toLocaleDateString()}</p>
                                         {order?.deliveredAt && <p>Delivered Date: {new Date(order?.deliveredAt).toLocaleDateString()}</p>}
+                                        <p className='font-semibold'>paymentId:{order?.paymentInfo?.paymentId}</p>
+                                        <p className='font-semibold'>upiID:{order?.paymentInfo?.upiID}</p>
+                                        <p className='font-semibold'>phoneNo:{order?.paymentInfo?.phoneNo}</p>
                                     </div>
-                                    <p className="text-sm sm:text-[15px]">Currency: {Math.ceil(order?.totalPrice)}</p>
-                                    <select
-                                        onChange={(event) => statusHandler(order._id, event)}
-                                        value={order?.orderStatus}
-                                        className={`p-2 font-semibold hover:cursor-pointer ${order?.orderStatus === "Delivered" ? 'text-green-600' : order?.orderStatus === "Returned" ? "text-red-500" : "text-blue-600"}`}
-                                    >
-                                        {["Pending", "Canceled", "Shipped", "Delivered", "Returned"].map((status) => (
-                                            <option key={status} className='text-black' value={status}>
-                                                {status}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {/* <p className="text-sm sm:text-[15px] text-nowrap">Payment:<span className={`${order?.paidAt ? "text-green-600" : ""}`}>{order?.paymentStatus}</span></p> */}
+                                    <p className="text-sm sm:text-[15px] text-nowrap">Currency: {Math.ceil(order?.totalPrice)}</p>
+                                    <div className="">
+                                        <p className="font-semibold text-lg">OrderStatus</p>
+                                        <select
+                                            onChange={(event) => statusHandler(order._id, event, "deliveryStatus")}
+                                            value={order?.orderStatus}
+                                            className={`p-2 font-semibold hover:cursor-pointer ${order?.orderStatus === "Delivered" ? 'text-green-600' : order?.orderStatus === "Returned" ? "text-red-500" : "text-blue-600"}`}
+                                        >
+                                            {["Pending", "Canceled", "Shipped", "Delivered", "Returned"].map((status) => (
+                                                <option key={status} className='text-black' value={status}>
+                                                    {status}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="">
+                                        <p className="font-semibold text-lg">PaymentStatus</p>
+                                        <select
+                                            onChange={(event) => statusHandler(order._id, event, "paymentStatus")}
+                                            value={order?.paymentStatus}
+                                            className={`p-2 font-semibold hover:cursor-pointer ${order?.paymentStatus === "Completed" ? 'text-green-600' : order?.paymentStatus === "Failed" ? "text-red-500" : "text-blue-600"}`}
+                                        >
+                                            {['Pending', 'Completed', 'Failed', "Refunded"].map((status) => (
+                                                <option key={status} className='text-black' value={status}>
+                                                    {status}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -155,7 +182,7 @@ const OrderList = () => {
 
             </div>
             <div className={` pl-5 py-3 mt-6 hidden sm:block`}>
-                <p className='mb-3 text-sm font-medium '>Status Filters</p>
+                <p className='mb-3 text-sm font-medium '>OrderStatus Filters</p>
                 {["Pending", "Canceled", "Shipped", "Delivered", "Returned"].map(ostatus => (
                     <p key={ostatus} className='flex gap-2'>
                         <input

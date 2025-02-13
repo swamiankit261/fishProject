@@ -65,8 +65,8 @@ const Profile = () => {
                                 </div>
                                 <h2 className="text-center mt-1 font-semibold dark:text-gray-300">Upload Profile and Cover Image
                                 </h2>
-                                <div className="flex lg:flex-row md:flex-col sm:flex-col xs:flex-col gap-2 justify-center w-full">
-                                    <div className="w-full  mb-4 mt-6">
+                                <div className="flex flex-col lg:flex-row md:flex-col sm:flex-col xs:flex-col gap-2 justify-center w-full">
+                                    <div className="w-full  mb-4 sm:mt-6">
                                         <label htmlFor="username" className="mb-2 dark:text-gray-300">FullName</label>
                                         <input type="text"
                                             id="username"
@@ -87,7 +87,7 @@ const Profile = () => {
 
                                 <div className="w-full font-semibold text-xl text-center mx-auto my-5">Change Password</div>
 
-                                <div className="flex lg:flex-row md:flex-col sm:flex-col xs:flex-col gap-2 justify-center w-full">
+                                <div className="flex flex-col lg:flex-row md:flex-col sm:flex-col xs:flex-col gap-2 justify-center w-full">
                                     {/* <div className="w-full">
                                         <h3 className="dark:text-gray-300 mb-2">Sex</h3>
                                         <select

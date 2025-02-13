@@ -18,7 +18,7 @@ const BestSeller = () => {
         dispatch(setBestSellerProducts(data?.data))
     }
 
-    console.log(bestSeller?.length > 0)
+    // console.log(bestSeller?.length > 0)
 
     useEffect(() => {
         fatchData()

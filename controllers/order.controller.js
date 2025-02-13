@@ -4,7 +4,6 @@ import Product from "../models/product.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { validationResult } from "express-validator";
 import { ApiResponse } from "../utils/apiResponse.js";
-import mongoose from "mongoose";
 
 export const createOrder = asyncHandler(async (req, res) => {
 
@@ -47,16 +46,30 @@ export const createOrder = asyncHandler(async (req, res) => {
     });
 
     if (paymentMethod === "Stripe") {
-        newOrder.paymentInfo = paymentInfo
+        newOrder.paymentInfo = {
+            id: paymentInfo.id,
+            status: paymentInfo.status
+        }
     };
+
+    if (paymentMethod === "UPI" && (!paymentInfo.paymentId && !paymentInfo.phoneNo && !paymentInfo.upiID)) {
+        throw new ApiError(400, "Please provide paymentId/Transaction ID, phoneNo, upiID for UPI payment method.");
+    }
+
+    if (paymentMethod === "UPI") {
+        newOrder.paymentInfo = {
+            paymentId: paymentInfo.paymentId,
+            phoneNo: paymentInfo.phoneNo,
+            upiID: paymentInfo.upiID,
+        }
+    }
     if (paymentMethod !== "Cash on delivery") {
         newOrder.paidAt = Date.now();
     }
 
     const createdOrder = await Order.create(newOrder);
 
-
-    res.status(201).json(new ApiResponse(201, createdOrder, "order placed successfully.!"));
+    new ApiResponse(201, createdOrder, "order placed successfully.!").send(res);
 });
 
 // admin only
@@ -79,7 +92,7 @@ export const getMyOrder = asyncHandler(async (req, res) => {
 
 export const getAllOrders = asyncHandler(async (req, res) => {
 
-    const { id, status, page = 1, limit = 3 } = req.query;
+    const { id, status, page = 1, limit = 8 } = req.query;
 
     // const { orderStatus } = req.body;
 
@@ -150,12 +163,14 @@ export const getAllOrders = asyncHandler(async (req, res) => {
                                 _id: 1,
                                 shippingAddress: 1,
                                 orderItems: 1,
-                                user: 1,
+                                "user.userName": 1,
                                 paymentMethod: 1,
                                 itemsPrice: 1,
                                 gst: 1,
                                 shippingPrice: 1,
                                 totalPrice: 1,
+                                paymentInfo: 1,
+                                paymentStatus: 1,
                                 orderStatus: 1,
                                 paidAt: 1,
                                 deliveredAt: 1,
@@ -183,32 +198,41 @@ export const getAllOrders = asyncHandler(async (req, res) => {
     const totalPages = Math.ceil(totalResults / cappedLimit);
     const currentPage = parseInt(page, 10) <= totalPages ? parseInt(page, 10) : 1;
 
-    res.status(200).json(
-        new ApiResponse(
-            200,
-            { orders, totalResults, totalPages, currentPage },
-            "All orders retrieved successfully!"
-        )
-    );
+    new ApiResponse(200, { orders, totalResults, totalPages, currentPage }, "All orders retrieved successfully!").send(res);
 });
 
 export const updateOrderStatus = asyncHandler(async (req, res) => {
-    const { id, orderStatus } = req.body;
+    const { id, orderStatus, paymentStatus } = req.body;
 
-    if (!/^[0-9a-fA-F]{24}$/.test(id)) throw new ApiError(400, "Please provide a valid order ID.");
-
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) throw new ApiError(400, "Invalid order ID.");
 
     const VALID_STATUSES = ["Pending", "Canceled", "Shipped", "Delivered", "Returned"];
-    if (!VALID_STATUSES.includes(orderStatus)) {
+    const VALID_PAYMENT_STATUSES = ['Pending', 'Completed', 'Failed', "Refunded"];
+
+    if (orderStatus && !VALID_STATUSES.includes(orderStatus)) {
         throw new ApiError(400, "Invalid order status. Valid statuses are: Pending, Canceled, Shipped, Delivered, Returned.");
+    }
+    if (paymentStatus && !VALID_PAYMENT_STATUSES.includes(paymentStatus)) {
+        throw new ApiError(400, "Invalid payment status. Valid statuses are: Pending, Completed, Failed, Refunded.");
     }
 
     const order = await Order.findById(id);
     if (!order) throw new ApiError(404, "Order not found.");
 
-    if (order.orderStatus === orderStatus) throw new ApiError(400, `The order is already in the '${orderStatus}' state.`);
+    if (orderStatus && order.orderStatus === orderStatus) {
+        throw new ApiError(400, `Order is already '${orderStatus}'.`);
+    }
+    if (paymentStatus && order.paymentStatus === paymentStatus) {
+        throw new ApiError(400, `Payment status is already '${paymentStatus}'.`);
+    }
+    if (orderStatus === "Canceled" && order.paymentStatus === "Completed") {
+        throw new ApiError(400, "Cannot cancel a paid order.");
+    }
+    if (["Pending", "Completed", "Failed"].includes(paymentStatus) && ["Delivered", "Canceled", "Returned"].includes(order.orderStatus)) {
+        throw new ApiError(400, `Cannot update payment status for a ${order.orderStatus.toLowerCase()} order.`);
+    }
 
-    const disallowedTransitions = {
+    const invalidTransitions = {
         Returned: ["Pending", "Canceled", "Shipped", "Delivered"],
         Delivered: ["Pending", "Canceled", "Shipped"],
         Canceled: ["Delivered", "Shipped", "Returned"],
@@ -216,22 +240,64 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
         Pending: ["Returned"]
     };
 
-    if (disallowedTransitions[order.orderStatus]?.includes(orderStatus)) throw new ApiError(400, `Cannot update order from '${order.orderStatus}' to '${orderStatus}'.`);
+    if (invalidTransitions[order.orderStatus]?.includes(orderStatus)) {
+        throw new ApiError(400, `Cannot orderStatus from '${order.orderStatus}' to '${orderStatus}'.`);
+    }
 
+    if (orderStatus && ["Pending", "Failed"].includes(order.paymentStatus) && order.paymentMethod === "UPI") {
+        throw new ApiError(400, "Payment must be completed before updating order status.");
+    }
+
+    const updateFields = {};
+    if (orderStatus) updateFields.orderStatus = orderStatus;
+    if (paymentStatus) updateFields.paymentStatus = paymentStatus;
+
+    if (orderStatus === "Delivered") {
+        if (order.paymentMethod === "Cash on delivery") updateFields.paidAt = Date.now();
+        updateFields.deliveredAt = Date.now();
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
+    if (!updatedOrder) throw new ApiError(404, "Order not found during update.");
+
+    const resMessage = orderStatus ? "Order status updated successfully." : "Payment status updated successfully.";
+    new ApiResponse(200, updatedOrder, resMessage).send(res);
+});
+
+// Admin only
+export const updateOrderPaymentStatus = asyncHandler(async (req, res) => {
+    const { id, paymentStatus } = req.body;
+
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) throw new ApiError(400, "Please provide a valid order ID.");
+
+    const VALID_STATUSES = ['Pending', 'Completed', 'Failed', "Refunded"];
+    if (!VALID_STATUSES.includes(paymentStatus)) {
+        throw new ApiError(400, "Invalid payment status. Valid statuses are: Pending, Completed, Failed.");
+    }
+
+    const order = await Order.findById(id);
+    if (!order) throw new ApiError(404, "Order not found.");
+    if (order.paymentStatus === paymentStatus) throw new ApiError(400, `The order is already in the '${paymentStatus}' payment state.`);
+    const disallowedPaymentStatus = {
+        Completed: ["Pending"],
+        Failed: ["Pending", "Completed"]
+    };
+
+    if (disallowedPaymentStatus[order.paymentStatus]?.includes(paymentStatus)) {
+        throw new ApiError(400, `Cannot update order payment status from '${order.paymentStatus}' to '${paymentStatus}'.`)
+    };
 
     const fields = {
-        orderStatus: orderStatus,
-    }
-    if (orderStatus === 'Delivered') {
+        paymentStatus: paymentStatus,
+    };
+
+    if (paymentStatus === 'Completed') {
         fields.paidAt = Date.now();
-        fields.deliveredAt = Date.now();
     }
 
     const updatedOrder = await Order.findByIdAndUpdate(id, { $set: fields }, { new: true });
 
     if (!updatedOrder) throw new ApiError(404, "Order not found during update.");
 
-
-    // Respond with success
-    res.json(new ApiResponse(200, updatedOrder, "Order status updated successfully."));
+    new ApiResponse(200, updatedOrder, "Order payment status updated successfully.").send(res);
 });

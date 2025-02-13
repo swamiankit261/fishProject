@@ -67,8 +67,8 @@ const List = () => {
         <>
             <div className="flex w-full">
                 <Sidebar />
-                <div className="w-[70%] mx-auto ml-[max(5vw,25px)] my-8 text-gray-600 text-base">
-                    <div className="flex justify-between mb-2">
+                <div className="sm:w-[70%] w-full mx-auto ml-[max(5vw,25px)] my-8 text-gray-600 text-base">
+                    <div className="flex justify-between flex-wrap mb-2">
                         <Title text1={"ALL"} text2={"Products List"} />
                         <div className="flex gap-2">
                             <Button

@@ -16,7 +16,7 @@ const Orders = () => {
     }, [data, dispatch]);
     // console.info('orders', data?.data)
     return (
-        <div className='border-t pt-16'>
+        <div className='border-t pt-16 font-sans'>
             <div className='text-2xl'>
                 <Title text1={"MY"} text2={"ORDERS"} />
             </div>
@@ -33,8 +33,17 @@ const Orders = () => {
                                         <p>Quantity : {item.quantity}</p>
                                         <p>Size : {item.size} Inch </p>
                                     </div>
-                                    <p className='mt-2'>Date: <span className='text-gray-400'>{order.createdAt}</span></p>
+                                    <p className='mt-2'>Date: <span className='text-gray-400'>{new Date(order.createdAt).toLocaleDateString()}</span></p>
                                     <p className="font-semibold font-serif">{order.shippingAddress.address}</p>
+                                </div>
+                                <div className="">
+                                    <h1 className="font-semibold text-lg">your Payment description</h1>
+                                    <p className='font-medium'>PaymentMethod: {order?.paymentMethod}</p>
+                                    <p className='text-lg font-medium'>Transaction Id: {order?.paymentInfo?.paymentId}</p>
+                                    <p className='text-lg font-medium'>upiID: {order?.paymentInfo?.upiID}</p>
+                                    <p className='text-sm'>phoneNo: {order?.paymentInfo?.phoneNo}</p>
+
+                                    <p className={`text-sm ${order.paymentStatus === "Pending" ? "text-orange-500" : order.paymentStatus === "Failed" ? "text-red-500" : order.paymentStatus === "Completed" && "text-green-500"}`}><span className='text-black'>PaymentStatus:</span> {order?.paymentStatus}</p>
                                 </div>
                             </div>
                             <div className='md:w-1/2 flex justify-between'>

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import autoPopulate from "mongoose-autopopulate";
 
 // Define constants for enums
-const paymentTypes = ['Phone pay', 'Stripe', 'Cash on delivery'];
+const paymentTypes = ['UPI', 'Stripe', 'Cash on delivery'];
 const orderStatuses = ['Pending', 'Canceled', 'Shipped', 'Delivered', 'Returned'];
 
 const orderSchema = new mongoose.Schema(
@@ -83,7 +83,25 @@ const orderSchema = new mongoose.Schema(
         },
         paymentInfo: {
             id: { type: String },
-            status: { type: String }
+            status: { type: String },
+            paymentId: { type: String },
+            upiID: { type: String },
+            phoneNo: {
+                type: String, validate: {
+                    validator: function (v) {
+                        return /^[0-9]{10}$/.test(v); // Validates 10-digit phone number
+                    },
+                    message: props => `${props.value} is not a valid phone number.!`
+                }
+            },
+        },
+        paymentStatus: {
+            type: String,
+            enum: {
+                values: ['Pending', 'Completed', 'Failed', "Refunded"],
+                message: '{VALUE} is not a valid status'
+            },
+            default: 'Pending'
         },
         paidAt: {
             type: Date,
@@ -122,6 +140,22 @@ const orderSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+
+// Custom validation function for paymentInfo
+orderSchema.pre("validate", function (next) {
+    if (!this.paymentInfo) return next(); // Allow empty paymentInfo
+
+    const hasPaymentId = !!this.paymentInfo.paymentId && !!this.paymentInfo.upiID && !!this.paymentInfo.phoneNo;
+    const hasIdAndStatus = !!this.paymentInfo.id && !!this.paymentInfo.status;
+
+    if ((hasPaymentId === hasIdAndStatus) && (hasPaymentId || hasIdAndStatus)) {
+        this.invalidate("paymentInfo", "Either 'paymentId' , 'upiID' & 'phoneNo' OR 'id' & 'status' must be present (but not both).");
+    }
+
+    next();
+});
+
 
 // Virtual for computed total price
 orderSchema.virtual('computedTotalPrice').get(function () {

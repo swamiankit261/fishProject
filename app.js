@@ -9,6 +9,7 @@ const app = express();
 // import routes
 import userRoute from "./routes/user.routes.js";
 import productRoute from "./routes/product.routes.js";
+import Payment from "./routes/payment.routes.js";
 import orderRoute from "./routes/order.routes.js";
 
 // Load environment variables from.env file
@@ -26,6 +27,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/product", productRoute);
+app.use("/api/v1/payment", Payment);
 app.use("/api/v1/order", orderRoute);
 
 export { app };
