@@ -71,10 +71,12 @@ NODE_ENV=
 Create a `.env` file in the `frontend` folder with the following variables:
 
 ```env
-VITE_NODE_ENV=
+VITE_NODE_ENV=development
 
-VITE_GST=
-VITE_SHIPPING_PRICE=
+VITE_GST=18
+VITE_SHIPPING_PRICE=20,
+VITE_UPIID=example@axl
+VITE_ACCOUNT_HOST_NAME="jhon"
 ```
 
 ### 4. Run the Application
