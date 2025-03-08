@@ -14,7 +14,7 @@ const Add = () => {
 
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
-    const [category, setCategory] = useState("Men")
+    const [category, setCategory] = useState("Exotic fishes")
     const [countInStock, setCountInStock] = useState()
     const [price, setPrice] = useState(false)
     const [sizes, setSizes] = useState([])
