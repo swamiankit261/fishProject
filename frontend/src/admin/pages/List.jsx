@@ -19,7 +19,7 @@ const List = () => {
 
     queryParams.append("page", activePage);
 
-    const { currentData, isLoading: fatchLoading } = useFatchProductByAdminQuery(queryParams.toString());
+    const { currentData, refetch, isLoading: fatchLoading } = useFatchProductByAdminQuery(queryParams.toString());
     const [deleteProduct, { isLoading }] = useDeleteProductMutation();
 
 
@@ -41,6 +41,7 @@ const List = () => {
 
             if (response.success) {
                 console.log(response);
+                refetch()
                 toast.info(`${response.message}`);
                 setList((prevList) => prevList.filter((item) => item._id !== id));
             }

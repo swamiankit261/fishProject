@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import process from "node:process";
+import bcrypt from 'bcrypt';
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { UploadCloudinary } from "../utils/uploadCloudinary.js";
@@ -23,7 +24,7 @@ const options = {
 };
 
 export const createUser = asyncHandler(async (req, res) => {
-    const { userName, email, avater, password } = req.body;
+    const { userName, email, avatar, password } = req.body;
 
     if (!(userName && email && password)) throw new ApiError(400, "Please fill all the fields.!");
 
@@ -38,12 +39,12 @@ export const createUser = asyncHandler(async (req, res) => {
     };
 
     let image;
-    if (avater) {
-        image = await UploadCloudinary(avater, "user");
+    if (avatar) {
+        image = await UploadCloudinary(avatar, "user");
     }
 
     if (image) {
-        fields.avater = {
+        fields.avatar = {
             public_id: image.public_id,
             url: image.url,
         };
@@ -84,28 +85,32 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 export const updateUserProfile = asyncHandler(async (req, res) => {
-    const { userName, email, avater } = req.body;
+    const { userName, email, avatar, password } = req.body;
 
-    if (!(userName || email || avater)) throw new ApiError(400, "please fill in at least one field.!!");
+    if (!(userName || email || avatar || password)) throw new ApiError(400, "please fill in at least one field.!!");
 
     if (email && req.user.email === email) throw new ApiError(400, "email is already in use.!!");
-    if (userName && req.user.userName === userName) throw new ApiError(400, "userName is already in use.!!");
+    // if (userName && req.user.userName === userName) throw new ApiError(400, "userName is already in use.!!");
+    if (!/^(?=.*[A-Z])|(?=.*\d).{8,}$/.test(password)) throw new ApiError(400, "Password must contain at least 8 characters, one uppercase, one number.!!");
 
     const updateFields = {};
 
     if (userName) updateFields.userName = userName;
     if (email) updateFields.email = email;
+    if (password) updateFields.password = await bcrypt.hash(password, 10);
 
-    if (avater) {
-        if (req.user.avater.public_id) {
-            cloudinary.uploader.destroy(req.user.avater.public_id);
+    if (avatar) {
+        if (req.user.avatar.public_id) {
+            cloudinary.uploader.destroy(req.user.avatar.public_id);
         }
-        const image = await UploadCloudinary(avater, "user");
-        updateFields.avater = {
+        const image = await UploadCloudinary(avatar, "user");
+        updateFields.avatar = {
             public_id: image.public_id,
             url: image.url,
         };
     };
+
+    console.log(updateFields);
 
     const updatedUser = await User.findByIdAndUpdate(req.user._id, { $set: updateFields }, { new: true, runValidators: true });
 

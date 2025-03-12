@@ -32,7 +32,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"userName\": \"ankit\",\n    \"email\":\"example@gmail.com\",\n    // \"avater\":\"https://cdn-images-1.medium.com/max/1600/0*F0WAufLVwFsSVeDf.png\",\n    \"password\":\"As12345@\"\n}",
+							"raw": "{\n\t\"userName\": \"ankit\",\n    \"email\":\"example@gmail.com\",\n    // \"avatar\":\"https://cdn-images-1.medium.com/max/1600/0*F0WAufLVwFsSVeDf.png\",\n    \"password\":\"As12345@\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -99,7 +99,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"userName\":\"ankit swami\"\n//    \"email\":\"example@gmail.com\",\n    // \"avater\":\"https://cdn-images-1.medium.com/max/1600/0*F0WAufLVwFsSVeDf.png\",\n}",
+							"raw": "{\n\t\"userName\":\"ankit swami\"\n//    \"email\":\"example@gmail.com\",\n    // \"avatar\":\"https://cdn-images-1.medium.com/max/1600/0*F0WAufLVwFsSVeDf.png\",\n}",
 							"options": {
 								"raw": {
 									"language": "json"

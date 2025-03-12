@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
         }, "Email address must begin with a letter or underscore character and contain only alphanumeric characters.!!"],
         trim: true,
     },
-    avater: {
+    avatar: {
         public_id: { // cloudinary image id
             type: String,
         },
@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "please enter a password.!!"],
         minLength: [8, "password must be at least 8 characters long.!"],
-        match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.!!"],
+        match: [/^(?=.*[A-Z])|(?=.*\d).{8,}$/, "Password must contain at least 8 characters, one uppercase, one number.!!"],
         select: false // this field will not be included in the output
     }
 }, { timestamps: true });

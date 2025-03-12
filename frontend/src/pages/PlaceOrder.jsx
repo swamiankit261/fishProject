@@ -114,8 +114,8 @@ const PlaceOrder = () => {
     const handlePayment = (values) => {
         setPaymentInfo(values);
         setShowModal(false);
-        console.log("UPI Deep Link: ", upiLink);
-        console.log("Total Price: ", totalPrice);
+        // console.log("UPI Deep Link: ", upiLink);
+        // console.log("Total Price: ", totalPrice);
     };
 
     console.log("Payment Details: ", paymentInfo);

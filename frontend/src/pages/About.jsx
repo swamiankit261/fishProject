@@ -10,6 +10,15 @@ const About = () => {
             <div className='text-2xl text-center pt-8 border-t'>
                 <Title text1={"ABOUT"} text2={"US"} />
             </div>
+            <div className="">
+                <p>
+                    After working for Wildlife Rehabilitation and Animal Welfare for so many years, I finally came back from to the Aquarium Hobby! I&apos;ve always been into Aquariums and Fishes, specially some Predatory ones. A big part of the money made, is gonna go into Wildlife Rescues.
+                </p>
+                <p>
+                    Hope I&apos;ll be able to get you the best possible Fishes/Things in the best possible prices!
+                    if something goes South, kindly don&apos;t loose Hope in me; will sort out your things for sure
+                </p>
+            </div>
             <div className='my-10 flex flex-col md:flex-row  gap-16'>
                 <img src={assets.about_img} className='w-full md:max-w-[450px]' alt="" />
                 <div className='flex flex-col justify-center gap-6 md:w-2/3 text-gray-600'>
