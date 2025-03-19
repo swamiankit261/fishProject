@@ -15,7 +15,7 @@ A full-stack web application built with the MERN (MongoDB, Express, React, Node.
 
 Ensure you have the following installed on your system:
 
-- Node.js (>= 16.x)
+- Node.js (v22.12.0)
 - MongoDB (>= 5.x)
 - npm or yarn (package managers)
 
