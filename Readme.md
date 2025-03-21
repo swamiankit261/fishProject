@@ -77,6 +77,7 @@ VITE_GST=18
 VITE_SHIPPING_PRICE=20,
 VITE_UPIID=example@axl
 VITE_ACCOUNT_HOST_NAME="jhon"
+VITE_BACKEND_URL=http://localhost:5000
 ```
 
 ### 4. Run the Application
