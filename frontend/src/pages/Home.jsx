@@ -5,24 +5,24 @@ import Latest_collection from '../components/Latest_collection'
 import BestSeller from '../components/BestSeller'
 import Ourpolicy from '../components/Ourpolicy'
 import NewsLetterBox from '../components/NewsLetterBox'
-import { useDispatch } from 'react-redux'
-import { useGetProfileQuery } from '../redux/api/user'
-import { setCredentials } from '../redux/features/auth/authSlice'
+// import { useDispatch } from 'react-redux'
+// import { useGetProfileQuery } from '../redux/api/user'
+// import { setCredentials } from '../redux/features/auth/authSlice'
 const Home = () => {
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
-    const { data } = useGetProfileQuery();
+    // const { data } = useGetProfileQuery();
 
-    const fatchProfile = () => {
-        if (data && data.data) {
-            dispatch(setCredentials(data));
-        }
-    }
+    // const fatchProfile = () => {
+    //     if (data && data.data) {
+    //         dispatch(setCredentials(data));
+    //     }
+    // }
 
-    useEffect(() => {
-        fatchProfile();
-    }, [data]);
+    // useEffect(() => {
+    //     fatchProfile();
+    // }, [data]);
 
     return (
         <div>
