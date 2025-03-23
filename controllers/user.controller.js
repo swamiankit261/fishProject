@@ -19,7 +19,7 @@ const options = () => ({
         ? process.env.ACCESS_TOKEN_EXPIRY * 24 * 60 * 60 * 1000 // Days in milliseconds
         : 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    domain: process.env.COOKIE_DOMIN,
+    domain: process.env.COOKIE_DOMAIN,
     secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
     sameSite: "None", // Uncomment this for CSRF protection
     path: "/", // Uncomment this if you want the cookie accessible site-wide
