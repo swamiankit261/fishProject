@@ -19,7 +19,7 @@ const options = {
         : 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
-    sameSite: "strict", // Uncomment this for CSRF protection
+    sameSite: "None", // Uncomment this for CSRF protection
     path: "/", // Uncomment this if you want the cookie accessible site-wide
 };
 
