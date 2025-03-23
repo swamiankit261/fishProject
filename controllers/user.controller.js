@@ -7,6 +7,8 @@ import { UploadCloudinary } from "../utils/uploadCloudinary.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { v2 as cloudinary } from "cloudinary";
 
+
+console.log("node_env", process.env.NODE_ENV === 'production', process.env.NODE_ENV)
 const options = {
     // expire: new Date(Date.now() +
     //     (process.env.ACCESS_TOKEN_EXPIRY
