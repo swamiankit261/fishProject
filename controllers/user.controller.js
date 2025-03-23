@@ -74,14 +74,15 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
-    console.log("in logout",process.env.NODE_ENV)
-    res.clearCookie("accessToken", {
+    const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         domain: process.env.COOKIE_DOMAIN,
         sameSite: "None",
         path: '/',
-    }).json(new ApiResponse(200, req.user.userName, "User logged out successfully.!"));
+    }
+    console.log("in logout", process.env.NODE_ENV, options)
+    res.clearCookie("accessToken", options).json(new ApiResponse(200, req.user.userName, "User logged out successfully.!"));
 });
 
 export const getUserProfile = asyncHandler(async (req, res) => {
