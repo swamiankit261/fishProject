@@ -8,7 +8,6 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { v2 as cloudinary } from "cloudinary";
 
 
-console.log("node_env", process.env.NODE_ENV === 'production', process.env.NODE_ENV)
 const options = () => ({
     // expire: new Date(Date.now() +
     //     (process.env.ACCESS_TOKEN_EXPIRY
@@ -69,7 +68,6 @@ export const loginUser = asyncHandler(async (req, res) => {
     if (!user || !(await user.matchPassword(password))) throw new ApiError(401, "Invalid email or password.!");
 
     const token = user.generateAccessToken();
-    console.log("node_env_in", process.env.NODE_ENV === 'production', process.env.NODE_ENV)
 
     res.status(200).cookie("accessToken", token, options()).json(new ApiResponse(200, { token }, "User logged in successfully.!"));
 });
