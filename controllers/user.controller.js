@@ -77,7 +77,8 @@ export const logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        domain: process.env.COOKIE_DOMAIN,
+        sameSite: "None",
         path: '/',
     }).json(new ApiResponse(200, req.user.userName, "User logged out successfully.!"));
 });
