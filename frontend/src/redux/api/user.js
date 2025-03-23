@@ -17,6 +17,7 @@ const userApiSlice = apiSlice.injectEndpoints({
             query: (data) => ({
                 url: `${USERS_URL}/login`,
                 method: 'POST',
+                credentials: 'include',
                 body: data,
                 transformResponse: (response) => response
             })
