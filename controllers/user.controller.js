@@ -9,7 +9,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 
 console.log("node_env", process.env.NODE_ENV === 'production', process.env.NODE_ENV)
-const options = {
+const options = () => ({
     // expire: new Date(Date.now() +
     //     (process.env.ACCESS_TOKEN_EXPIRY
     //         ? process.env.ACCESS_TOKEN_EXPIRY * 24 * 60 * 60 * 1000
@@ -23,7 +23,7 @@ const options = {
     secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
     sameSite: "None", // Uncomment this for CSRF protection
     path: "/", // Uncomment this if you want the cookie accessible site-wide
-};
+})
 
 export const createUser = asyncHandler(async (req, res) => {
     const { userName, email, avatar, password } = req.body;
@@ -71,7 +71,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     const token = user.generateAccessToken();
     console.log("node_env_in", process.env.NODE_ENV === 'production', process.env.NODE_ENV)
 
-    res.status(200).cookie("accessToken", token, options).json(new ApiResponse(200, { token }, "User logged in successfully.!"));
+    res.status(200).cookie("accessToken", token, options()).json(new ApiResponse(200, { token }, "User logged in successfully.!"));
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
