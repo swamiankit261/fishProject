@@ -8,12 +8,12 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const options = {
-    expire: new Date(Date.now() +
-        (process.env.ACCESS_TOKEN_EXPIRY
-            ? process.env.ACCESS_TOKEN_EXPIRY * 24 * 60 * 60 * 1000
-            : 7 * 24 * 60 * 60 * 1000
-        )
-    ).toUTCString(),
+    // expire: new Date(Date.now() +
+    //     (process.env.ACCESS_TOKEN_EXPIRY
+    //         ? process.env.ACCESS_TOKEN_EXPIRY * 24 * 60 * 60 * 1000
+    //         : 7 * 24 * 60 * 60 * 1000
+    //     )
+    // ).toUTCString(),
     maxAge: process.env.ACCESS_TOKEN_EXPIRY
         ? process.env.ACCESS_TOKEN_EXPIRY * 24 * 60 * 60 * 1000 // Days in milliseconds
         : 7 * 24 * 60 * 60 * 1000,
