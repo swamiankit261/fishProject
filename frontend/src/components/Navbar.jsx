@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react'
 import { assets } from '../assets/frontend_assets/assets'
-import favLogo from "../../public/favicon.jpg"
+import favLogo from "../../public/favicon.jpeg"
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useLogoutUserMutation } from '../redux/api/user'
 import { useDispatch, useSelector } from 'react-redux'
@@ -40,7 +40,7 @@ const Navbar = (props) => {
 
     return (
         <div className='flex items-center justify-between py-5 font-medium'>
-            <img src={favLogo} className='w-36' alt="" />
+            <NavLink to='/'><img src={favLogo} className='w-36' alt="" /></NavLink>
             <ul className='hidden sm:flex gap-5 text-sm text-gray-700'>
                 <NavLink to="/" className="flex flex-col items-center gap-1">
                     <p>Home</p>
