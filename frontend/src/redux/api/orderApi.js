@@ -7,14 +7,16 @@ const orderApiSlice = apiSlice.injectEndpoints({
         fatchOrder: builder.query({
             query: () => ({
                 url: `${ORDER_URL}/myOrder`,
-                method: 'GET'
+                method: 'GET',
+                credentials: "include",
             })
         }),
         createOrder: builder.mutation({
             query: (order) => ({
                 url: `${ORDER_URL}/newOrder`,
                 method: 'POST',
-                body: order
+                body: order,
+                credentials: "include",
             }),
             transformResponse: (response) => response
         }),
@@ -22,6 +24,7 @@ const orderApiSlice = apiSlice.injectEndpoints({
             query: (QueryParams) => ({
                 url: `${ORDER_URL}/adminOrder/?${QueryParams}`,
                 method: 'GET',
+                credentials: "include",
             }),
             transformResponse: (response) => response.data
         }),
@@ -29,14 +32,16 @@ const orderApiSlice = apiSlice.injectEndpoints({
             query: (order) => ({
                 url: `${ORDER_URL}/updateOrder`,
                 method: 'PATCH',
-                body: order
+                body: order,
+                credentials: "include",
             }),
             // transformResponse: (response) => response
         }),
         deleteOrder: builder.mutation({
             query: (orderId) => ({
                 url: `${ORDER_URL}/${orderId}`,
-                method: 'DELETE'
+                method: 'DELETE',
+                credentials: "include",
             }),
             // transformResponse: (response) => response
         })

@@ -8,6 +8,7 @@ const productApiSlice = apiSlice.injectEndpoints({
             query: (QueryParams) => ({
                 url: `${PRODUCT_URL}/search/?${QueryParams}`,
                 method: 'GET',
+                credentials: "include",
             }),
             // transformResponse: (response) => response.data,
             providesTags: ['Products'],
@@ -16,12 +17,14 @@ const productApiSlice = apiSlice.injectEndpoints({
             query: (productId) => ({
                 url: `${PRODUCT_URL}/getProduct/${productId}`,
                 method: 'GET',
+                credentials: "include",
             })
         }),
         getHomeProduct: builder.query({
             query: () => ({
                 url: `${PRODUCT_URL}/homeProduct`,
                 method: 'GET',
+                credentials: "include",
             }),
             // transformResponse: (response) => response.data,
             providesTags: ['Home'],
@@ -30,12 +33,14 @@ const productApiSlice = apiSlice.injectEndpoints({
             query: () => ({
                 url: `${PRODUCT_URL}/bestSeller`,
                 method: 'GET',
+                credentials: "include",
             })
         }),
         fatchProductByAdmin: builder.query({
             query: (QueryParams) => ({
                 url: `${PRODUCT_URL}/adminProduct/?${QueryParams}`,
                 method: 'GET',
+                credentials: "include",
             }),
             transformResponse: (response) => response.data,
             providesTags: ['Admin'],
@@ -45,6 +50,7 @@ const productApiSlice = apiSlice.injectEndpoints({
                 url: `${PRODUCT_URL}/create`,
                 method: 'POST',
                 body: product,
+                credentials: "include",
             }),
             // transformResponse: (response) => response.data,
         }),
@@ -53,12 +59,14 @@ const productApiSlice = apiSlice.injectEndpoints({
                 url: `${PRODUCT_URL}/update/${id}`,
                 method: 'PUT',
                 body: product,
+                credentials: "include",
             })
         }),
         deleteProduct: builder.mutation({
             query: (id) => ({
                 url: `${PRODUCT_URL}/delete/${id}`,
                 method: 'DELETE',
+                credentials: "include",
             })
         })
     }),

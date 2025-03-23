@@ -28,6 +28,7 @@ const userApiSlice = apiSlice.injectEndpoints({
                 url: `${USERS_URL}/register`,
                 method: 'POST',
                 body: data,
+                credentials: "include",
                 transformResponse: (response) => response
             })
         }),
@@ -35,14 +36,14 @@ const userApiSlice = apiSlice.injectEndpoints({
             query: (data) => ({
                 url: `${USERS_URL}/updateUser`,
                 method: 'PUT',
-                body: data,
+                body: data, credentials: "include",
                 transformResponse: (response) => response
             })
         }),
         logoutUser: builder.mutation({
             query: () => ({
                 url: `${USERS_URL}/logout`,
-                method: 'GET',
+                method: 'GET', credentials: "include",
                 transformResponse: (response) => response
             })
         })
