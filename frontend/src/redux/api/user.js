@@ -10,6 +10,7 @@ const userApiSlice = apiSlice.injectEndpoints({
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
+                credentials: true,
                 transformResponse: (response) => response
             })
         }),
