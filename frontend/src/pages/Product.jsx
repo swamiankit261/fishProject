@@ -45,7 +45,7 @@ const Product = () => {
         if (countInStock === 0) {
             toast.error(`Only ${countInStock} items are available in stock`, { position: "bottom-right", closeOnClick: true })
         } else if (userInfo) {
-            if (!fishSize) {
+            if (!fishSize && size.includes((size) => size > 0)) {
                 toast.error(`please select a size`, { position: "bottom-right" })
             } else {
                 dispatch(addItem({ _id, image: images[0].path, fishName, price, size: fishSize, countInStock, quantity: 1 }))
@@ -99,7 +99,7 @@ const Product = () => {
                     <div className='flex flex-col gap-4 my-8'>
                         <p>Select Size</p>
                         <div className='flex gap-2'>
-                            {size.map((item, index) => (
+                            {size > 0 && size?.map((item, index) => (
                                 <button onClick={() => { setFishSize(item) }} className={`border py-2 px-4 bg-gray-100 ${item === fishSize ? 'border-orange-500' : ''}`} key={index}>{item} Inch </button>
                             ))}
                         </div>
