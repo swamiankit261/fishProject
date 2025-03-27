@@ -71,7 +71,7 @@ const Add = () => {
     }
 
     const handleAddSize = () => {
-        if (currentSize && !isNaN(currentSize) && currentSize > 0) {
+        if (currentSize && !isNaN(currentSize)) {
             if (sizes.some(handle => handle === currentSize)) {
                 toast.info(`${currentSize} Size already added.`);
             } else if (sizes.length >= 5) {
