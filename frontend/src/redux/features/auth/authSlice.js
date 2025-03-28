@@ -12,13 +12,19 @@ const authSlice = createSlice({
             state.userInfo = action.payload.data;
         },
         logout: (state) => {
-            localStorage.removeItem("cartItems")
-            localStorage.removeItem("cartTotal")
-            localStorage.removeItem("address")
+            localStorage.removeItem("cartItems");
+            localStorage.removeItem("cartTotal");
+            localStorage.removeItem("address");
+        
+            // Remove all cookies by setting their expiry date to the past
+            document.cookie.split(";").forEach((cookie) => {
+                document.cookie = cookie
+                    .replace(/^ +/, "") // Remove spaces
+                    .replace(/=.*/, "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/"); // Expire it
+            });
+        
             state.userInfo = null;
-            // localStorage.clear();
             window.location.href = '/';
-            // return initialState
         }
     }
 });

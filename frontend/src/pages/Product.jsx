@@ -97,7 +97,7 @@ const Product = () => {
                     <p className='mt-5 text-gray-500 md:w4/5'>{description}</p>
 
                     <div className='flex flex-col gap-4 my-8'>
-                        <p>Select Size</p>
+                        {size > 0 && <p>Select Size</p>}
                         <div className='flex gap-2'>
                             {size > 0 && size?.map((item, index) => (
                                 <button onClick={() => { setFishSize(item) }} className={`border py-2 px-4 bg-gray-100 ${item === fishSize ? 'border-orange-500' : ''}`} key={index}>{item} Inch </button>
