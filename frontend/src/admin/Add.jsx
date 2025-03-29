@@ -71,18 +71,36 @@ const Add = () => {
     }
 
     const handleAddSize = () => {
-        if (currentSize && !isNaN(currentSize)) {
-            if (sizes.some(handle => handle === currentSize)) {
-                toast.info(`${currentSize} Size already added.`);
-            } else if (sizes.length >= 5) {
-                toast.info(`only 5 size is allowed.`)
-            } else {
-                setSizes((prevSizes) => [...prevSizes, currentSize]);
-                setCurrentSize('');
-            }
-        } else {
-            toast.info('Please enter a valid size.');
+        const sizeValue = currentSize.trim();
+        const numSize = Number(sizeValue);
+
+        switch (true) {
+            case !sizeValue || isNaN(numSize):
+                toast.info('Please enter a valid numeric size.');
+                break;
+
+            case sizes.includes(numSize.toString()):
+                toast.info(`${numSize} Size already added.`);
+                break;
+
+            case sizes.length >= 5:
+                toast.info('Only 5 sizes are allowed.');
+                break;
+
+            case numSize === 0 && sizes.length > 0:
+                toast.info('0 size is only allowed alone.');
+                break;
+
+            case sizes.includes('0'):
+                toast.info('0 size is already added and must be alone.');
+                break;
+
+            default:
+                setSizes(numSize === 0 ? ["0"] : [...sizes, numSize.toString()]);
+                break;
         }
+
+        setCurrentSize('');
     };
 
 
@@ -216,21 +234,32 @@ const Add = () => {
                             </div>
                             <div>
                                 <p className='mb-2'>Product Sizes</p>
-                                <input
-                                    className='w-full px-3 py-2 sm:w-[120px] mr-2'
-                                    value={currentSize}
-                                    min={0}
-                                    onChange={(e) => setCurrentSize(e.target.value)}
-                                    type="number"
-                                    placeholder='5'
-                                />
-                                <Button type='button'
-                                    className=''
-                                    size='sm'
-                                    onClick={handleAddSize}
-                                >
-                                    Add sizes
-                                </Button>
+                                <div className="sm:flex gap-2">
+                                    <input
+                                        className='w-full px-3 py-2 sm:w-[120px] mr-2'
+                                        value={currentSize}
+                                        min={0}
+                                        onChange={(e) => setCurrentSize(e.target.value)}
+                                        type="number"
+                                        placeholder='5'
+                                    />
+                                    <div className="flex gap-2 mt-4 sm:mt-0">
+                                        <Button type='button'
+                                            className=''
+                                            size='sm'
+                                            onClick={handleAddSize}
+                                        >
+                                            Add sizes
+                                        </Button>
+                                        <Button type='button'
+                                            className=''
+                                            size='sm'
+                                            onClick={() => { if (sizes.length > 0) { setSizes([]); toast.info(`Sizes removed successfully.`) } }}
+                                        >
+                                            Remove sizes
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <h3>Added Sizes:</h3>

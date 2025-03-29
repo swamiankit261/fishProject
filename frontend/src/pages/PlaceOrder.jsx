@@ -91,6 +91,21 @@ const PlaceOrder = () => {
                     toast.error(error?.data?.message ?? "An unexpected error occurred.");
                 }
             }
+        } else {
+
+            try {
+                const response = await createOrder({ ...data }).unwrap();
+
+                if (response?.success) {
+                    dispatch(addAddress(response.data.shippingAddress));
+                    dispatch(clearItemCart())
+                    navigate('/orders', { state: { orderId: response?.data?.orderId } }); // Redirect to Order Success page with orderId in query param
+                    toast.success('Order placed successfully!', { position: "top-center", closeOnClick: true })
+                }
+            } catch (error) {
+                console.error("placeOrder: ", error);
+                toast.error(error?.data?.message ?? "An unexpected error occurred.");
+            }
         }
     };
 
@@ -118,7 +133,7 @@ const PlaceOrder = () => {
         // console.log("Total Price: ", totalPrice);
     };
 
-    console.log("Payment Details: ", paymentInfo);
+    // console.log("Payment Details: ", paymentInfo);
     const paymentValidations = Yup.object().shape({
         paymentId: Yup.string().matches(/^[a-zA-Z0-9\-_.]{10,35}$/, 'please enter a valid Transaction ID').required('Transaction ID is required'),
         upiID: Yup.string().matches(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/, "please enter a valid UPI ID").required("UPI ID is required"),

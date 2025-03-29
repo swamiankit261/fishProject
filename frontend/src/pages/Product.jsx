@@ -1,37 +1,33 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { assets } from '../assets/frontend_assets/assets'
-import RelatedProduct from '../components/RelatedProduct'
-import { useFetchProductByIdQuery } from '../redux/api/product'
-import { setProductDetails } from '../redux/features/product/productSlice'
-import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
-import { addItem } from '../redux/features/cart/cartSlice'
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { assets } from '../assets/frontend_assets/assets';
+import RelatedProduct from '../components/RelatedProduct';
+import { useFetchProductByIdQuery } from '../redux/api/product';
+import { setProductDetails } from '../redux/features/product/productSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { addItem } from '../redux/features/cart/cartSlice';
+import { Button } from '@material-tailwind/react';
 
 const Product = () => {
-    const { productId } = useParams()
+    const { productId } = useParams();
 
-    const [image, setimage] = useState('')
-    const [fishSize, setFishSize] = useState('')
+    const [image, setimage] = useState('');
+    const [fishSize, setFishSize] = useState('');
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
-    const { userInfo } = useSelector(store => store.auth)
+    const { userInfo } = useSelector(store => store.auth);
 
     const { productDetails } = useSelector(store => store.products);
-    // const { items, total } = useSelector(store => store.cart);
-    // const { productList } = useSelector(store => store.products);
 
     const { data } = useFetchProductByIdQuery(productId);
 
-    // console.log('Product   ----', productDetails)
-    // console.log('productId   -', productId)
-    // console.log('data   -', data)
 
     useEffect(() => {
         if (data?.data) {
-            dispatch(setProductDetails(data.data))
+            dispatch(setProductDetails(data.data));
         }
     }, [data, dispatch]);
 
@@ -39,16 +35,25 @@ const Product = () => {
 
     // console.log("item: ", { items, total })
 
+
     const addToCart = () => {
         // console.log("addToCart", arg)
 
         if (countInStock === 0) {
             toast.error(`Only ${countInStock} items are available in stock`, { position: "bottom-right", closeOnClick: true })
         } else if (userInfo) {
-            if (!fishSize && size.includes((size) => size > 0)) {
-                toast.error(`please select a size`, { position: "bottom-right" })
+            if (!fishSize && size?.some((s) => s > 0)) {
+                toast.error(`Please select a size`, { position: "bottom-right" });
             } else {
-                dispatch(addItem({ _id, image: images[0].path, fishName, price, size: fishSize, countInStock, quantity: 1 }))
+                let cartSize
+                if (size?.some((s) => s == 0)) {
+                    cartSize = size[0]
+                } else {
+                    cartSize = fishSize
+                }
+
+                console.log("cartSize", cartSize)
+                dispatch(addItem({ _id, image: images[0].path, fishName, price, size: cartSize, countInStock, quantity: 1 }))
                 toast.success(`Cart added successfully`, { position: "bottom-right", closeOnClick: true })
             }
 
@@ -59,6 +64,8 @@ const Product = () => {
 
     }
 
+    if (!data) return <div className='text-center text-lg'>Loading product...</div>;
+
     return productDetails ? (
         <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
             {/* product data */}
@@ -68,8 +75,7 @@ const Product = () => {
                     <div className='flex sm:flex-col overflow-x-auto sm:overflow-x-scroll sm:justify-normal sm:w-[18.7%] w-full'>
 
                         {
-
-                            images.map((item, index) => (
+                            images?.map((item, index) => (
                                 <img onClick={() => setimage(item.path)} src={item.path} key={index} className='w-[24] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer' alt="" />
                             ))
                         }
@@ -87,7 +93,7 @@ const Product = () => {
                         <img src={assets.star_icon} alt="" className="w-3 h-3" />
                         <img src={assets.star_icon} alt="" className="w-3 h-3" />
                         <img src={assets.star_dull_icon} alt="" className="w-3 h-3" />
-                        <p className='pl-2'>(122)</p>
+                        <p className='pl-2'>(12...)</p>
                     </div>
                     <p className='mt-5 text-3xl font-medium'>₹ {price}</p>
                     {countInStock > 0 ? <p className='mt-5 text-1xl font-bold text-green-500'>In stock</p> : <p className='mt-5 text-1xl font-bold text-rose-500'>out of stock</p>}
@@ -97,14 +103,14 @@ const Product = () => {
                     <p className='mt-5 text-gray-500 md:w4/5'>{description}</p>
 
                     <div className='flex flex-col gap-4 my-8'>
-                        {size > 0 && <p>Select Size</p>}
+                        {size?.some((s) => s > 0) && <p>Select Size</p>}
                         <div className='flex gap-2'>
-                            {size > 0 && size?.map((item, index) => (
+                            {size?.some((s) => s > 0) && size?.map((item, index) => (
                                 <button onClick={() => { setFishSize(item) }} className={`border py-2 px-4 bg-gray-100 ${item === fishSize ? 'border-orange-500' : ''}`} key={index}>{item} Inch </button>
                             ))}
                         </div>
                     </div>
-                    <button onClick={addToCart} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700 '>ADD TO CART</button>
+                    <Button onClick={addToCart} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700 '>ADD TO CART</Button>
                     <hr className='mt-8 sm:w-4/5' />
                     <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
                         <p>100% Original Product</p>

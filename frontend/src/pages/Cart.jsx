@@ -31,6 +31,8 @@ const Cart = () => {
         toast.info('Item removed from cart.', { position: 'bottom-right', closeOnClick: true });
     };
 
+    console.log(items[1]);
+
     return (
         <div className="border-t pt-14">
             <div className="text-2xl mb-3">
@@ -52,7 +54,7 @@ const Cart = () => {
                                             ₹
                                             {item.price}
                                         </p>
-                                        <p className="px-2 sm:px-3 sm:py-1 border bg-slate-50">{item.size} Inch</p>
+                                        <p className="px-2 sm:px-3 sm:py-1 border bg-slate-50">{item?.size} Inch</p>
                                     </div>
                                 </div>
                             </div>
