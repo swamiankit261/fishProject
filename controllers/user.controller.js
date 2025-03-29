@@ -21,7 +21,7 @@ const options = () => ({
     httpOnly: true,
     domain: process.env.COOKIE_DOMAIN,
     secure: process.env.NODE_ENV === 'production', // Use HTTPS only in production
-    sameSite: "None", // Uncomment this for CSRF protection
+    // sameSite: "None", // Uncomment this for CSRF protection
     path: "/", // Uncomment this if you want the cookie accessible site-wide
 })
 
@@ -70,7 +70,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
     const token = user.generateAccessToken();
 
-    res.status(200).cookie("accessToken", token, options()).json(new ApiResponse(200, { token }, "User logged in successfully.!"));
+    res.status(200).cookie("access_token", token, options()).json(new ApiResponse(200, { token }, "User logged in successfully.!"));
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
@@ -81,7 +81,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
         sameSite: "None",
         path: '/',
     }
-    res.clearCookie("accessToken", options).json(new ApiResponse(200, req.user.userName, "User logged out successfully.!"));
+    res.clearCookie("access_token", options).json(new ApiResponse(200, req.user.userName, "User logged out successfully.!"));
 });
 
 export const getUserProfile = asyncHandler(async (req, res) => {

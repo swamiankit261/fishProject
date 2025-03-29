@@ -7,9 +7,10 @@ import User from "../models/user.model.js";
 
 export const AuthenticationJWT = asyncHandler(async (req, _, next) => {
 
-    const token = req.cookies?.accessToken ?? req.header("Authorization")?.replace("Bearer ", "");
+    const token = req.cookies?.access_token ?? req.header("Authorization")?.replace("Bearer ", "");
 
-    if (!token) {
+
+    if (!token || token === "undefined") {
         throw new ApiError(401, "No token provided!");
     }
 

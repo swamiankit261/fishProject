@@ -27,7 +27,7 @@ const App = () => {
 
   // console.info("Private routes", data);
 
-  // const token = Cookies.get('accessToken')
+  // const token = Cookies.get('access_token')
 
   // console.info("token: ", JSON.stringify(token));
   return (
