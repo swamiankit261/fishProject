@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import Sidebar from './components/Sidebar';
 import { useCreateProductMutation } from "../redux/api/product"
 import { useNavigate } from 'react-router-dom';
-import { Button, IconButton } from '@material-tailwind/react';
+import { Button, IconButton, Input, Option, Select, Textarea } from '@material-tailwind/react';
 const Add = () => {
     const [image1, setImage1] = useState(false)
     const [image2, setImage2] = useState(false)
@@ -14,9 +14,9 @@ const Add = () => {
 
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
-    const [category, setCategory] = useState("Exotic fishes")
+    const [category, setCategory] = useState("")
     const [countInStock, setCountInStock] = useState()
-    const [price, setPrice] = useState(false)
+    const [price, setPrice] = useState()
     const [sizes, setSizes] = useState([])
     const [currentSize, setCurrentSize] = useState('');
     const [bestSeller, setBestSeller] = useState(false);
@@ -205,54 +205,72 @@ const Add = () => {
 
                             </div>
 
-                            <div className='w-full'>
-                                <p className='mb-2'>Product name</p>
-                                <input className='w-full max-w-[500px] px-3  py-2' onChange={(e) => setName(e.target.value)} value={name} type="text" placeholder='Type here' required />
+                            <div className='w-1/2'>
+                                <Input
+                                    type="text"
+                                    className='focus:border-purple-500 focus:border-t-transparent'
+                                    value={name}
+                                    label='Product name'
+                                    onChange={(e) => setName(e.target.value)}
+                                />
                             </div>
 
-                            <div className='w-full'>
-                                <p className='mb-2'>Product desc</p>
-                                <textarea className='w-full max-w-[500px] px-3  py-2' onChange={(e) => setDescription(e.target.value)} value={description} type="text" placeholder='Write content here' required />
+                            <div className='w-1/2'>
+                                {/* <p className='mb-2'>Product desc</p> */}
+                                <Textarea
+                                    onChange={(e) => setDescription(e.target.value)} value={description}
+                                    className="peer h-full min-h-[100px] w-full resize-none rounded-[7px] border  border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-purple-500 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
+                                    label='Product description'
+                                    placeholder=" " />
+                                {/* <textarea className='w-full max-w-[500px] px-3  py-2' onChange={(e) => setDescription(e.target.value)} value={description} type="text" placeholder='Write content here' required /> */}
                             </div>
 
                             <div className='flex flex-col sm:flex-row gap-2 w-full sm:gap-8'>
                                 <div>
-                                    <p className='mb-2'>Product Category</p>
-                                    <select className='w-full px-3 py-2' onChange={(e) => setCategory(e.target.value)}>
-                                        {['Exotic fishes', 'Aquarium Fishes', 'Fresh Water Fishes', 'Pond Fishes', 'Monster Fishes', 'Marien Fishes'].map((category) => {
-
-                                            return <option key={category} value={category}>{category}</option>
-                                        })}
-                                    </select>
+                                    <Select label="Product Category" defaultValue={category} className='focus:border-purple-500 focus:border-t-transparent'>
+                                        {["Exotic fishes", "Aquarium Fishes", "Fresh Water Fishes", "Pond Fishes", "Monster Fishes", "Marien Fishes",].map((cat) => (
+                                            <Option key={cat} onClick={() => setCategory(cat)}>
+                                                {cat}
+                                            </Option>
+                                        ))}
+                                    </Select>
                                 </div>
-
                                 <div>
-                                    <p className='mb-2'>Product Price</p>
-                                    <input className='w-full px-3 py-2 sm:w-[120px]' value={price} onChange={(e) => setPrice(e.target.value)} type="number" placeholder='price' />
+                                    <Input
+                                        className='focus:border-purple-500 focus:border-t-transparent'
+                                        type="number"
+                                        value={price}
+                                        label='Product Price'
+                                        max={15000}
+                                        onChange={(e) => setPrice(Number(e.target.value))}
+
+                                    />
+
+
                                 </div>
 
                             </div>
                             <div>
-                                <p className='mb-2'>Product Sizes</p>
-                                <div className="sm:flex gap-2">
-                                    <input
-                                        className='w-full px-3 py-2 sm:w-[120px] mr-2'
-                                        value={currentSize}
-                                        min={0}
-                                        onChange={(e) => setCurrentSize(e.target.value)}
-                                        type="number"
-                                        placeholder='5'
-                                    />
+                                <div className="flex gap-2">
+                                    <div className="">
+                                        <Input
+                                            className='focus:border-purple-500 focus:border-t-transparent'
+                                            type="number"
+                                            value={currentSize}
+                                            label='Product Sizes'
+                                            onChange={(e) => setCurrentSize(e.target.value)}
+                                        />
+                                    </div>
                                     <div className="flex gap-2 mt-4 sm:mt-0">
                                         <Button type='button'
-                                            className=''
+                                            className='bg-green-500'
                                             size='sm'
                                             onClick={handleAddSize}
                                         >
                                             Add sizes
                                         </Button>
                                         <Button type='button'
-                                            className=''
+                                            className='bg-red-600'
                                             size='sm'
                                             onClick={() => { if (sizes.length > 0) { setSizes([]); toast.info(`Sizes removed successfully.`) } }}
                                         >
@@ -270,8 +288,15 @@ const Add = () => {
                                 </div>
                             </div>
                             <div>
-                                <p className='mb-2'>Product stock</p>
-                                <input className='w-full px-3 py-2 sm:w-[120px]' required value={countInStock} onChange={(e) => setCountInStock(e.target.value)} type="number" placeholder='stock' />
+                                {/* <p className='mb-2'>Product stock</p> */}
+                                <Input
+                                    className='focus:border-purple-500 focus:border-t-transparent'
+                                    type="number"
+                                    value={countInStock}
+                                    label='Product stock'
+                                    onChange={(e) => setCountInStock(e.target.value)}
+                                />
+                                {/* <input className='w-full px-3 py-2 sm:w-[120px]' required value={countInStock} onChange={(e) => setCountInStock(e.target.value)} type="number" placeholder='stock' /> */}
                             </div>
                             <div className='flex gap-2 mt-2'>
                                 <input onChange={() => { setBestSeller(pre => !pre) }} checked={bestSeller} type="checkbox" name="bestSeller" id="bestSeller" />
