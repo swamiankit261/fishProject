@@ -5,15 +5,17 @@ import ProductItem from '../components/Productitem'
 import { useFetchProductsQuery } from '../redux/api/product'
 import { useDispatch, useSelector } from 'react-redux'
 import { setProducts } from '../redux/features/product/productSlice'
-import { Button } from '@material-tailwind/react'
+import { Button, Menu, MenuHandler, MenuItem, MenuList } from '@material-tailwind/react'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import PriceRangeSlider from '../components/PriceRangeSlider'
 const Collection = () => {
     const [category, setCategory] = useState();
     const [sortType, setSortType] = useState("createdAt:desc");
+    const [sortLable, setSortLable] = useState("Sort Options")
     const [activePage, setActivePage] = useState(1);
     const [totalPages, setTotalPages] = useState();
     const [filter, setFilter] = useState(false);
+    const [open, setOpen] = useState(false);
     // const [limit, setLimit] = useState(12);
     const [rangeValues, setRangeValues] = useState({ min: 0, max: 15000 });
 
@@ -130,14 +132,39 @@ const Collection = () => {
 
                 {/* Right side content */}
                 <div className='flex-1'>
-                    <div className='flex justify-between text-base sm:text-2xl mb-4'>
+                    <div className='flex-wrap md:flex justify-between text-base sm:text-2xl mb-4'>
                         <Title text1={"ALL"} text2={"COLLECTIONS"} />
-                        <select onChange={(e) => { setSortType(`${e.target.value}`) }} className='border-2 border-gray-300 text-sm px-2'>
-                            <option value="createdAt:desc">Sort by Date : New to old</option>
-                            <option value="createdAt:incre">Sort by Date : Old to New</option>
-                            <option value="price:desc">Sort by Price : High to Low</option>
-                            <option value="price:incre">Sort by Price: Low to High</option>
-                        </select>
+                        <Menu open={open} handler={setOpen}>
+                            <div
+                                onMouseEnter={() => setOpen(true)}
+                                onMouseLeave={() => setOpen(false)}
+                            >
+                                <MenuHandler>
+                                    <Button size="" className="bg-orange-500 text-white">
+                                        {sortLable || "Sort Options"}
+                                    </Button>
+                                </MenuHandler>
+                                <MenuList className="bg-white shadow-md">
+                                    {[
+                                        { label: "Sort by Date: New to Old", value: "createdAt:desc" },
+                                        { label: "Sort by Date: Old to New", value: "createdAt:incre" },
+                                        { label: "Sort by Price: High to Low", value: "price:desc" },
+                                        { label: "Sort by Price: Low to High", value: "price:incre" }
+                                    ].map((option) => (
+                                        <MenuItem
+                                            key={option.value}
+                                            onClick={() => {
+                                                setSortType(option.value);
+                                                setSortLable(option.label);
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            {option.label}
+                                        </MenuItem>
+                                    ))}
+                                </MenuList>
+                            </div>
+                        </Menu>
                     </div>
                     {/* Map products */}
                     <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>

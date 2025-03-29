@@ -251,7 +251,7 @@ const Add = () => {
 
                             </div>
                             <div>
-                                <div className="flex gap-2">
+                                <div className="flex-wrap md:flex gap-2">
                                     <div className="">
                                         <Input
                                             className='focus:border-purple-500 focus:border-t-transparent'

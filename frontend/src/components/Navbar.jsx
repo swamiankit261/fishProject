@@ -68,7 +68,7 @@ const Navbar = (props) => {
                 <img onClick={handleSearch} src={assets.search_icon} className='w-5 cursor-pointer' />
                 <div className='group relative'>
                     <Link to="/login"><img className='w-5 cursor-pointer' src={assets.profile_icon} alt="" /></Link>
-                    <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4 bg-gray-50 rounded'>
+                    <div className='group-hover:block hidden absolute z-20 dropdown-menu right-0 pt-4 bg-gray-50 rounded'>
                         <div className='flex flex-col gap-2 w-36 py-3 px-5 text-gray-700 bg-slate-100 z-30 rounded'>
                             {userInfo?.role === "admin" && <NavLink className='cursor-pointer sm:hover:text-black ' to='/admin'>Admin panal</NavLink>}
                             <NavLink to={"/profile"} className='cursor-pointer sm:hover:text-black'>My profile</NavLink>
