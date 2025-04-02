@@ -8,6 +8,7 @@ import { Button } from '@material-tailwind/react';
 import { NavLink } from 'react-router-dom';
 import Title from '../../components/Title';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { CiEdit } from "react-icons/ci";
 
 const List = () => {
     const [list, setList] = useState([]);
@@ -91,19 +92,20 @@ const List = () => {
                             </Button>
                         </div>
                     </div>
-                    <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] items-center py-2 px-1 border bg-gray-100 text-sm">
+                    <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr_1fr] items-center py-2 px-1 border bg-gray-100 text-sm">
                         <b >Image</b>
                         <b>Name</b>
                         <b>Category</b>
                         <b>Stock</b>
                         <b>Price</b>
+                        <b>Edit Product</b>
                         <b className="text-center">Delete Action</b>
                     </div>
 
                     {list && list.length > 0 ? (
                         list.map((item, index) => (
                             <div
-                                className="grid grid-col-[1fr_2fr_1fr_1fr] md:grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] items-center gap-2 py-1 px-2 border text-sm"
+                                className="grid grid-col-[1fr_2fr_1fr_1fr_1fr] md:grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr_1fr] items-center gap-2 py-1 px-2 border text-sm"
                                 key={index}
                             >
                                 <div className="bg-blue-gray-500 w-12 ">
@@ -119,6 +121,12 @@ const List = () => {
                                 <p>{item?.category || 'N/A'}</p>
                                 <p>{item?.countInStock || <span className='text-red-500'>N/A</span>}</p>
                                 <p>{item?.price || 'N/A'}</p>
+                                <NavLink
+                                    // to={`/admin/add/${item?._id}`}
+                                    className=" align-middle text-center m-auto hover:text-green-600"
+                                >
+                                    <CiEdit className='text-xl m-auto' />
+                                </NavLink>
                                 <Button
                                     loading={isLoading}
                                     size="sm"

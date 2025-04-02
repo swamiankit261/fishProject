@@ -8,7 +8,7 @@ const PaymentSchema = new mongoose.Schema(
         },
         paymentId: {
             type: String, required: [true, "UPI ref NO:/transaction ID must are required."],
-
+            unique: [true, "UPI ref NO:/transaction ID must be unique."],
         },
         upiId: {
             type: String, required: [true, "UPI ID must be required."],

@@ -28,6 +28,7 @@ const router = createBrowserRouter(
       <Route path='/collection' element={<Collection />} />
       <Route element={<PrivateRoutes />} >
         <Route path='/cart' element={<Cart />} />
+        <Route path='/admin/add/:Id' element={<Add />} />
         <Route path='/admin/add' element={<Add />} />
         <Route path='/admin/orderslist' element={<OrderList />} />
         <Route path="/profile" element={<Profile />} />
