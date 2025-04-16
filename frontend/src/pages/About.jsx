@@ -20,15 +20,25 @@ const About = () => {
                 </p>
             </div>
             <div className='my-10 flex flex-col md:flex-row  gap-16'>
-                <img src="myimg/me2.jpeg" className='w-full md:max-w-[450px]' alt="" />
-                <div className='flex flex-col justify-center gap-6 md:w-2/3 text-gray-600'>
-                    <p>This isn’t just a comeback—it&apos;s a mission. A significant portion of the money I make here will go directly into Wildlife Rescues and supporting animals in need. So when you buy from me, you&apos;re not just getting quality fish—you’re also contributing to a bigger cause.</p>
-                    <p>If ever something goes wrong or doesn’t go as planned, please don’t lose hope in me. I promise to sort out your concerns personally and make things right. Your trust means the world, and I’m here for the long haul.</p>
-                    <b className='text-gray-800'>OUR MISSSION</b>
-                    <p>My goal is to bring you the best fishes and aquarium essentials at the best possible prices. I’ll be doing my best to ensure you get healthy, vibrant fishes and products you can trust—without breaking the bank.</p>
+                {/* <img src="myimg/me2.jpeg" className='w-full md:max-w-[450px]' alt="" /> */}
+                <div className="md:w-1/2">
+                    <Carousel />
                 </div>
+                <div className='flex flex-col justify-center gap-6 md:w-2/3 text-gray-600'>
+                    <p>From childhood, I have been observing the utmost cruelty on Reptiles, where there were no such teams for their Rescue or Rehabilitation. Figuring out the handling skills myself,
+                        my Wildlife Conservation started. After Volunteering in several NGOs, got my NGO registered & I started making up the Team, which could make a difference in the Urban Wildlife Conservation.
+                        Fishes used to be a big source of Peace since then, and to generate my pocket money when I was small, I used to breed several Cichlids & setups. Which extended to the level where I was raising several Raptors and other Wild Animals.</p>
+                    <p>  I have always been crazy about Predatory fishes, specially the Channa family. Arowanas were not so common back then, but I’ve had a few, and that too for many years. Understanding the comfort & stress of the Fish, I never send fishes who have been transported lately Instead, I wait for their Stability and colour to come up. It usually takes about 3-4 weeks for any fish to come at the perfect condition.</p>
+
+                </div>
+
             </div>
-            <Carousel />
+            <div className="">
+                <b className='text-gray-800'>OUR MISSSION</b>
+                <p>Apart from the Rescues & the welfare: Exotic Pet keeping hobby is always a part of me, but since the Rules & Laws are still very much complicated. Still you will be able to find some very cool Lobsters, Newts, Crabs, etc. here.
+                    I hope all of my experience till now, is gonna help me making this hobby great. I hope you get the Fish of your Dreams!
+                </p>
+            </div>
             <div className='text-xl py-4'>
                 <Title text1={"Why "} text2={"CHOOSE US"} />
             </div>
