@@ -28,6 +28,7 @@
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
     "react-hook-form": "^7.54.2",
+    "swiper": "^11.2.6",
     "yup": "^1.6.1"
   },
   "devDependencies": {

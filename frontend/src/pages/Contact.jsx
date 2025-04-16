@@ -19,8 +19,8 @@ const Contact = () => {
                     <p className='text-gray-500'>6/433, Hanshvihar <br />,RIICO area , mansarovar jaiur</p>
                     <p className='text-gray-500'>Mobile no.:+9145994506 <br></br></p>
                     <p className='font-semibold text-xl text-gray-600'>Careers at forever</p>
-                    <p className='text-gray-500'>Learn More about our team and job Openings </p>
-                    <button className=' border border-black px-8 py-4 text-sm hover:bg-black hover:text-white transition-all duration-500'>Explore Jobs</button>
+                    <p className='text-gray-500'>Learn More about our team and Openings </p>
+                    <button className=' border border-black px-8 py-4 text-sm hover:bg-black hover:text-white transition-all duration-500'>Explore</button>
                 </div>
             </div>
             <NewsLetterBox />

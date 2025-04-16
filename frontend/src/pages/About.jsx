@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react'
 import Title from '../components/Title'
-import { assets } from '../assets/frontend_assets/assets'
-import NewsLetterBox from '../components/NewsLetterBox'
+import NewsLetterBox from '../components/NewsLetterBox';
+import Carousel from '../components/Carousel';
 
 const About = () => {
     return (
@@ -20,14 +20,15 @@ const About = () => {
                 </p>
             </div>
             <div className='my-10 flex flex-col md:flex-row  gap-16'>
-                <img src={assets.about_img} className='w-full md:max-w-[450px]' alt="" />
+                <img src="myimg/me2.jpeg" className='w-full md:max-w-[450px]' alt="" />
                 <div className='flex flex-col justify-center gap-6 md:w-2/3 text-gray-600'>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Harum aliquam facere placeat voluptate eligendi? Ea eius, nesciunt pariatur maiores ratione nisi optio dolorem, odio ducimus perspiciatis quas. Minima, fugit consectetur.</p>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Harum aliquam facere placeat voluptate eligendi? Ea eius, nesciunt pariatur maiores ratione nisi optio dolorem, odio ducimus perspiciatis quas. Minima, fugit consectetur.</p>
+                    <p>This isn’t just a comeback—it&apos;s a mission. A significant portion of the money I make here will go directly into Wildlife Rescues and supporting animals in need. So when you buy from me, you&apos;re not just getting quality fish—you’re also contributing to a bigger cause.</p>
+                    <p>If ever something goes wrong or doesn’t go as planned, please don’t lose hope in me. I promise to sort out your concerns personally and make things right. Your trust means the world, and I’m here for the long haul.</p>
                     <b className='text-gray-800'>OUR MISSSION</b>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Velit soluta aut, numquam est, iusto magnam, alias inventore omnis minus saepe odit mollitia corporis minima quia iure rerum eligendi! Eum, eligendi.</p>
+                    <p>My goal is to bring you the best fishes and aquarium essentials at the best possible prices. I’ll be doing my best to ensure you get healthy, vibrant fishes and products you can trust—without breaking the bank.</p>
                 </div>
             </div>
+            <Carousel />
             <div className='text-xl py-4'>
                 <Title text1={"Why "} text2={"CHOOSE US"} />
             </div>
