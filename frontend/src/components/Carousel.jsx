@@ -20,7 +20,7 @@ const Carousel = () => {
                 // navigation
                 pagination={{ clickable: true }}
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
-                className="h-96 md:h-96 rounded"
+                className="h-52 md:h-96 rounded"
             >
                 {images.map((src, index) => (
                     <SwiperSlide key={index}>
