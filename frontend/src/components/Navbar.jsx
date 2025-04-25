@@ -40,7 +40,9 @@ const Navbar = (props) => {
 
     return (
         <div className='flex items-center justify-between py-5 font-medium'>
-            <NavLink to='/'><img src={favLogo} className='w-36' alt="" /></NavLink>
+            <div className="relative w-20 h-10 sm:w-20 sm:h-12"> 
+                <NavLink to='/' className={`bg-cover bg-top-left absolute top-0 w-20 h-10 sm:w-20 sm:h-10`} style={{ backgroundImage: `url(${favLogo})` }} />
+            </div>
             <ul className='hidden sm:flex gap-5 text-sm text-gray-700'>
                 <NavLink to="/" className="flex flex-col items-center gap-1">
                     <p>Home</p>

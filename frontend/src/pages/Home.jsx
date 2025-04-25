@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import Hero from '../components/Hero'
 import Latest_collection from '../components/Latest_collection'
 import BestSeller from '../components/BestSeller'
-import Ourpolicy from '../components/Ourpolicy'
+// import Ourpolicy from '../components/Ourpolicy'
 import NewsLetterBox from '../components/NewsLetterBox'
 import { useDispatch } from 'react-redux'
 import { useGetProfileQuery } from '../redux/api/user'
@@ -29,7 +29,7 @@ const Home = () => {
             <Hero />
             <Latest_collection />
             <BestSeller />
-            <Ourpolicy />
+            {/* <Ourpolicy /> */}
             <NewsLetterBox />
         </div>
     )

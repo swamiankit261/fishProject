@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react'
 // import { assets } from '../assets/frontend_assets/assets';
-import homepageFish from "../assets/frontend_assets/homeFish.jpeg";
+import homepageFish from "../assets/frontend_assets/homepageFish.jpeg";
 
 const Hero = () => {
     return (
