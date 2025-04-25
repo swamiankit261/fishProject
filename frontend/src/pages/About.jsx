@@ -12,11 +12,10 @@ const About = () => {
             </div>
             <div className="">
                 <p>
-                    After working for Wildlife Rehabilitation and Animal Welfare for so many years, I finally came back from to the Aquarium Hobby! I&apos;ve always been into Aquariums and Fishes, specially some Predatory ones. A big part of the money made, is gonna go into Wildlife Rescues.
+                    After working for the Wildlife Rehabilitation and Animal Welfare for so many years, I finally came back to the Aquarium Hobby! I&apos;ve always been into Aquariums and Fishes, specially some Predatory ones. A big part of the money made, is gonna go into my Wildlife Rescues & Operations.
                 </p>
                 <p>
-                    Hope I&apos;ll be able to get you the best possible Fishes/Things in the best possible prices!
-                    if something goes South, kindly don&apos;t loose Hope in me; will sort out your things for sure
+                    Hope I&apos;ll be able to get you the best possible Fishes/Things in the best possible prices! if something goes South, kindly don&apos;t loose Hope in me; I a quite New & will sort out your things for sure.
                 </p>
             </div>
             <div className='my-10 flex flex-col md:flex-row  gap-16'>
@@ -41,19 +40,22 @@ const About = () => {
             </div>
             <div className='text-xl py-4'>
                 <Title text1={"Why "} text2={"CHOOSE US"} />
+                <div className="text-sm">
+                    <p className='text-gray-600'>From observing the Aquatic Life in Wild, to being in the Hobby from the last 19 years; I wouldn&apos;t say I know everything about them,  but I know the parts which can necessarily better this hobby. Animal Welfare has taught me about understanding animals, which I imply on my Fishes too ofcourse. They&apos;re treated like babies here, and that&apos;s why you should choose me</p>
+                </div>
             </div>
             <div className='flex flex-col md:flex-row  text-sm mb-20'>
                 <div className='border px-10 md:px-16 py-8 sm:py-20 flex flex-col gap-5 '>
                     <b>Quality Assurance:</b>
-                    <p className='text-gray-600'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat quam temporibus aspernatur molestiae voluptatem est quisquam quaerat iste unde, odit culpa at repudiandae blanditiis doloremque vitae provident inventore explicabo dignissimos?</p>
+                    <p className="text-gray-600">We are committed to providing only the highest quality aquatic products and services. Every fish, plant, and accessory is carefully selected and inspected to ensure it meets our rigorous standards. Our focus is on delivering healthy, vibrant, and well-cared-for aquatic life, along with reliable equipment that enhances your aquarium experience. Your satisfaction and the well-being of your aquatic pets are our top priorities.</p>
                 </div>
                 <div className='border px-10 md:px-16 py-8 sm:py-20 flex flex-col gap-5 '>
                     <b>Convenience:</b>
-                    <p className='text-gray-600'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat quam temporibus aspernatur molestiae voluptatem est quisquam quaerat iste unde, odit culpa at repudiandae blanditiis doloremque vitae provident inventore explicabo dignissimos?</p>
+                    <p className='text-gray-600'>We understand how important it is to have a seamless and hassle-free experience when it comes to your aquatic needs. From easy online ordering to timely delivery, we ensure that every step of the process is smooth and efficient. Our goal is to provide you with high-quality products and services right at your doorstep, saving you time and effort while ensuring your satisfaction.</p>
                 </div>
                 <div className='border px-10 md:px-16 py-8 sm:py-20 flex flex-col gap-5 '>
                     <b>Exceptional Customer Service:</b>
-                    <p className='text-gray-600'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat quam temporibus aspernatur molestiae voluptatem est quisquam quaerat iste unde, odit culpa at repudiandae blanditiis doloremque vitae provident inventore explicabo dignissimos?</p>
+                    <p className='text-gray-600'>We prioritize your satisfaction above all else. Our team is dedicated to providing prompt, friendly, and knowledgeable support to address all your questions and concerns. Whether you need guidance on fish care, product recommendations, or assistance with an order, we are here to help. Your trust and happiness are our top priorities, and we strive to build lasting relationships with our customers through exceptional service.</p>
                 </div>
             </div>
             <NewsLetterBox />
