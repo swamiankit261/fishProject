@@ -4,6 +4,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { v2 as cloudinary } from "cloudinary";
 import mongoose from "mongoose";
+import { array } from "yup";
 
 
 export const createProduct = asyncHandler(async (req, res, next) => {
@@ -20,6 +21,18 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 
         if (!req.files || req.files.length === 0) throw new ApiError(400, "please provide images.!");
 
+        // console.log('size Error------------:', req.body.size.map(Number));
+        let parsedSize = [];
+
+        try {
+            parsedSize = typeof size === "string" ? JSON.parse(size) : size;
+            if (!Array.isArray(parsedSize) || parsedSize.some(val => isNaN(Number(val)))) {
+                throw new Error("Size must be an array of numbers.");
+            }
+        } catch {
+            throw new ApiError(400, "Invalid size format.!");
+        }
+
         const fields = {
             fishName,
             description,
@@ -27,7 +40,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
             price,
             countInStock,
             category,
-            size: size.split(',').map(Number),
+            size: parsedSize.map(Number),
             images: [],
         };
 
@@ -55,50 +68,66 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 
 export const updateProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { fishName, description, price, countInStock, category, size } = req.body;
+    const { fishName, description, price, countInStock, category, size, existingImages, bestSeller } = req.body;
 
-    if (!/^[0-9a-fA-F]{24}$/.test(id)) throw new ApiError(400, "Please provide product valid ID.!");
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) throw new ApiError(400, "Please provide a valid product ID.");
 
-    // Check if at least one field is provided
-    console.log(`req.body`, req.body);
-    if (![fishName, description, price, countInStock, category, size].some(item => item)) {
+    if (![fishName, description, price, countInStock, category, size, bestSeller].some(item => item)) {
         throw new ApiError(400, "At least one field is required.");
     }
 
-
     const product = await Product.findById(id);
-    if (!product) throw new ApiError(404, "Product not found.!");
+    if (!product) throw new ApiError(404, "Product not found.");
 
-    const fields = { fishName, description, price, countInStock, category, size };
-    // const images = [];
-
-    const images = product.images;
-
-    // Handle file uploads
-    if (req.files && req.files.length > 0) {
-        for (const [index, element] of req.files.entries()) {
-            const existingImage = images[index].filename;
-
-            // Delete existing image in Cloudinary if present
-            if (existingImage) await cloudinary.uploader.destroy(existingImage);
-
-            // Replace the image at the current index
-            images.splice(index, 1, { path: element.path, filename: element.filename });
-        }
-
-        product.images = images; // Save updated images
+    const fields = { fishName, description, price, countInStock, category, bestSeller };
+    if (size) {
+        fields.size = typeof size === 'string' ? JSON.parse(size).map(Number) : size;
     }
 
-    // Update product in the database
-    Object.keys(fields).forEach(key => {
-        if (fields[key] !== undefined) {
-            product[key] = fields[key];
+    let images = [];
+
+    // Parse existingImages from req.body
+    const parsedExistingImages = Array.isArray(existingImages)
+        ? existingImages
+        : existingImages ? [existingImages] : [];
+
+    // Clean up cloudinary images if needed
+    for (let i = 0; i < product.images.length; i++) {
+        const originalImage = product.images[i];
+
+        // If this original image is not in existingImages, delete it from Cloudinary
+        const stillExists = parsedExistingImages.includes(originalImage.path);
+        if (!stillExists) {
+            await cloudinary.uploader.destroy(originalImage.filename);
+        }
+    }
+
+    // Add back existingImages that are still needed
+    for (let imgPath of parsedExistingImages) {
+        const original = product.images.find(img => img.path === imgPath);
+        if (original) images.push(original);
+    }
+
+    // Add new uploaded files
+    if (req.files && req.files.length > 0) {
+        for (const file of req.files) {
+            images.push({ path: file.path, filename: file.filename });
+        }
+    }
+
+    // Replace product images with new image array
+    product.images = images;
+
+    // Update other fields
+    Object.entries(fields).forEach(([key, value]) => {
+        if (value !== undefined) {
+            product[key] = value;
         }
     });
 
     await product.save();
 
-    res.status(200).json(new ApiResponse(200, [], "Product updated successfully.!"));
+    res.status(200).json(new ApiResponse(200, product, "Product updated successfully."));
 });
 
 export const searchAndFindProducts = asyncHandler(async (req, res) => {

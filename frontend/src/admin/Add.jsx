@@ -2,9 +2,20 @@ import { useEffect, useState } from 'react';
 import { assets } from '../assets/admin_assets/assets';
 import { toast } from 'react-toastify';
 import Sidebar from './components/Sidebar';
-import { useCreateProductMutation, useFetchProductByIdQuery, useUpdateProductMutation } from '../redux/api/product';
+import {
+    useCreateProductMutation,
+    useFetchProductByIdQuery,
+    useUpdateProductMutation
+} from '../redux/api/product';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, IconButton, Input, Option, Select, Textarea } from '@material-tailwind/react';
+import {
+    Button,
+    IconButton,
+    Input,
+    Option,
+    Select,
+    Textarea
+} from '@material-tailwind/react';
 
 const Update = () => {
     const [product, setProduct] = useState({
@@ -25,12 +36,13 @@ const Update = () => {
     const { Id } = useParams();
     const [createProduct, { isLoading }] = useCreateProductMutation();
     const [updateProduct] = useUpdateProductMutation();
-
     const { data } = useFetchProductByIdQuery(Id);
 
     useEffect(() => {
         if (data?.data) {
-            setProduct({
+            setOriginalProduct(data.data);
+            setProduct(prev => ({
+                ...prev,
                 fishName: data.data.fishName,
                 description: data.data.description,
                 price: data.data.price,
@@ -38,10 +50,8 @@ const Update = () => {
                 category: data.data.category,
                 size: data.data.size,
                 bestSeller: data.data.bestSeller,
-                images: data.data.images.map(img => img.path),
-                currentSize: ''
-            });
-            setOriginalProduct(data.data); // store original for comparison
+                images: data.data.images.map(img => img.path)
+            }));
         }
     }, [data]);
 
@@ -76,15 +86,18 @@ const Update = () => {
         }
     };
 
+    console.log("product", product.size.map(Number));
+
     const onSubmitHandler = async (e) => {
         e.preventDefault();
 
         try {
             const formData = new FormData();
-            let hasChanges = false;
 
-            if (Id && originalProduct) {
-                // Only append changed fields
+            if (Id) {
+                let hasChanges = false;
+
+                // Compare fields and append only modified ones
                 if (product.fishName !== originalProduct.fishName) {
                     formData.append("fishName", product.fishName);
                     hasChanges = true;
@@ -106,7 +119,7 @@ const Update = () => {
                     hasChanges = true;
                 }
                 if (JSON.stringify(product.size) !== JSON.stringify(originalProduct.size)) {
-                    formData.append("size", JSON.stringify(product.size));
+                    formData.append("size", product.size);
                     hasChanges = true;
                 }
                 if (product.bestSeller !== originalProduct.bestSeller) {
@@ -114,14 +127,20 @@ const Update = () => {
                     hasChanges = true;
                 }
 
-                // Append images as image1, image2, ...
-                product.images.forEach((img, idx) => {
-                    if (img && typeof img !== 'string') {
-                        formData.append(`image${idx + 1}`, img);
+                // Handle images (existing URLs + new Files)
+                product.images.forEach(img => {
+                    if (img) {
+                        if (typeof img === 'string') {
+                            formData.append("existingImages[]", img);
+                        } else {
+                            formData.append("file", img);
+                        }
                         hasChanges = true;
                     }
                 });
-
+                for (const [key, value] of formData.entries()) {
+                    console.warn(key, value);
+                }
                 if (!hasChanges) {
                     toast.info("No changes detected.");
                     return;
@@ -137,21 +156,21 @@ const Update = () => {
                 }
 
             } else {
-                // Create new product
+                // CREATE logic
                 Object.entries(product).forEach(([key, value]) => {
                     if (key !== "images" && key !== "currentSize") {
                         formData.append(key, key === "size" ? JSON.stringify(value) : value);
                     }
                 });
 
-                product.images.forEach((image, index) => {
-                    if (image) formData.append(`image${index + 1}`, image);
+                product.images.forEach(image => {
+                    if (image) formData.append("file", image);
                 });
 
                 const response = await createProduct(formData);
 
                 if (response?.data?.success) {
-                    toast.success(`${response.data.data.fishName} added successfully.`);
+                    toast.success(`${response.data.data.fishName} added successfully. Product form has been reset.`);
                     navigate("/admin");
                     setProduct({
                         images: [null, null, null, null],
@@ -172,7 +191,6 @@ const Update = () => {
             toast.error(error.message);
         }
     };
-
     return (
         <div className='flex w-full'>
             <Sidebar />
@@ -182,30 +200,80 @@ const Update = () => {
                     <div className='flex gap-3'>
                         {product.images.map((image, index) => (
                             <label key={index} htmlFor={`image${index + 1}`}>
-                                <img className='w-20' src={
-                                    image
-                                        ? (typeof image === 'string' ? image : URL.createObjectURL(image))
-                                        : assets.upload_area
-                                } alt="" />
+                                <img
+                                    className='w-20'
+                                    src={!image
+                                        ? assets.upload_area
+                                        : typeof image === "string"
+                                            ? image
+                                            : URL.createObjectURL(image)}
+                                    alt=""
+                                />
                                 <input type="file" onChange={(e) => handleImageChange(index, e.target.files[0])} id={`image${index + 1}`} hidden />
                             </label>
                         ))}
                     </div>
-                    <Input type="text" value={product.fishName} required label='Product Name' onChange={(e) => setProduct(prev => ({ ...prev, fishName: e.target.value }))} />
-                    <Textarea value={product.description} label='Product Description' onChange={(e) => setProduct(prev => ({ ...prev, description: e.target.value }))} />
-                    <Select label="Product Category" value={product.category} onChange={(val) => setProduct(prev => ({ ...prev, category: val }))}>
+
+                    <Input
+                        type="text"
+                        value={product.fishName}
+                        required
+                        label='Product Name'
+                        onChange={(e) => setProduct(prev => ({ ...prev, fishName: e.target.value }))}
+                    />
+
+                    <Textarea
+                        value={product.description}
+                        label='Product Description'
+                        onChange={(e) => setProduct(prev => ({ ...prev, description: e.target.value }))}
+                    />
+
+                    <Select
+                        label="Product Category"
+                        value={product.category}
+                        onChange={(val) => setProduct(prev => ({ ...prev, category: val }))}
+                    >
                         {["Exotic fishes", "Aquarium Fishes", "Fresh Water Fishes", "Pond Fishes", "Monster Fishes", "Marine Fishes"].map(cat => (
                             <Option key={cat} value={cat}>{cat}</Option>
                         ))}
                     </Select>
-                    <Input type="number" value={product.price} required label='Product Price' onChange={(e) => setProduct(prev => ({ ...prev, price: Number(e.target.value) }))} />
-                    <Input type="number" min={0} required value={product.countInStock} label='Product Stock' onChange={(e) => setProduct(prev => ({ ...prev, countInStock: Number(e.target.value) }))} />
+
+                    <Input
+                        type="number"
+                        value={product.price}
+                        required
+                        label='Product Price'
+                        onChange={(e) => setProduct(prev => ({ ...prev, price: Number(e.target.value) }))}
+                    />
+
+                    <Input
+                        type="number"
+                        min={0}
+                        required
+                        value={product.countInStock}
+                        label='Product Stock'
+                        onChange={(e) => setProduct(prev => ({ ...prev, countInStock: Number(e.target.value) }))}
+                    />
+
                     <div className='flex-wrap md:flex gap-2'>
-                        <Input type="number" value={product.currentSize} label='Product Sizes' onChange={(e) => setProduct(prev => ({ ...prev, currentSize: e.target.value }))} />
+                        <Input
+                            type="number"
+                            value={product.currentSize}
+                            label='Product Sizes'
+                            onChange={(e) => setProduct(prev => ({ ...prev, currentSize: e.target.value }))}
+                        />
                         <div className="flex flex-col gap-2">
-                            {product.size.map((size, index) => (
+                            {product.size?.map((size, index) => (
                                 <div key={index} className='!flex items-center gap-2'>
-                                    <IconButton type='button' color='red' onClick={() => setProduct(prev => ({ ...prev, size: product.size.filter(s => s !== size) }))}>
+                                    <IconButton
+                                        type='button'
+                                        color='red'
+                                        onClick={() =>
+                                            setProduct(prev => ({
+                                                ...prev,
+                                                size: product.size.filter(s => s !== size)
+                                            }))
+                                        }>
                                         <p>{size}</p>
                                     </IconButton>
                                 </div>
@@ -213,11 +281,20 @@ const Update = () => {
                             <Button type='button' className='bg-green-500' size='sm' onClick={handleAddSize}>Add Size</Button>
                         </div>
                     </div>
+
                     <div className='flex gap-2 mt-2'>
-                        <input type="checkbox" checked={product.bestSeller} onChange={() => setProduct(prev => ({ ...prev, bestSeller: !prev.bestSeller }))} id="bestSeller" />
+                        <input
+                            type="checkbox"
+                            checked={product.bestSeller}
+                            onChange={() => setProduct(prev => ({ ...prev, bestSeller: !prev.bestSeller }))}
+                            id="bestSeller"
+                        />
                         <label htmlFor="bestSeller">Add to best seller</label>
                     </div>
-                    <Button type="submit" className="bg-black text-white px-16 py-3 text-sm mt-4">{isLoading ? "Processing..." : "Submit"}</Button>
+
+                    <Button type="submit" className="bg-black text-white px-16 py-3 text-sm mt-4">
+                        {isLoading ? "Processing..." : "Submit"}
+                    </Button>
                 </form>
             </div>
         </div>

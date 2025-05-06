@@ -2,9 +2,20 @@ import { useEffect, useState } from 'react';
 import { assets } from '../assets/admin_assets/assets';
 import { toast } from 'react-toastify';
 import Sidebar from './components/Sidebar';
-import { useCreateProductMutation, useFetchProductByIdQuery, useUpdateProductMutation } from '../redux/api/product';
+import {
+    useCreateProductMutation,
+    useFetchProductByIdQuery,
+    useUpdateProductMutation
+} from '../redux/api/product';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, IconButton, Input, Option, Select, Textarea } from '@material-tailwind/react';
+import {
+    Button,
+    IconButton,
+    Input,
+    Option,
+    Select,
+    Textarea
+} from '@material-tailwind/react';
 
 const Update = () => {
     const [product, setProduct] = useState({
@@ -77,13 +88,13 @@ const Update = () => {
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
-    
+
         try {
             const formData = new FormData();
-    
+
             if (Id) {
                 let hasChanges = false;
-    
+
                 // Compare fields and append only modified ones
                 if (product.fishName !== originalProduct.fishName) {
                     formData.append("fishName", product.fishName);
@@ -113,47 +124,49 @@ const Update = () => {
                     formData.append("bestSeller", product.bestSeller);
                     hasChanges = true;
                 }
-    
-                // Check if any image is a File (not a string URL)
-                const imageFiles = product.images.filter(img => img && typeof img !== 'string');
-                imageFiles.forEach(file => {
-                    formData.append("file", file);
-                    hasChanges = true;
+
+                // Handle images (existing URLs + new Files)
+                product.images.forEach(img => {
+                    if (img) {
+                        if (typeof img === 'string') {
+                            formData.append("existingImages[]", img);
+                        } else {
+                            formData.append("file", img);
+                        }
+                        hasChanges = true;
+                    }
                 });
-    
+
                 if (!hasChanges) {
                     toast.info("No changes detected.");
                     return;
                 }
-                for (var pair of formData.entries()) {
-                    console.log(pair[0]+ ', ' + pair[1]); 
-                };
-    
+
                 const response = await updateProduct({ id: Id, body: formData });
-    
+
                 if (response?.data?.success) {
                     toast.success(`${response.data.data.fishName} updated successfully.`);
                     navigate("/admin");
                 } else {
                     toast.error(response?.error?.data?.message || "Update failed");
                 }
-    
+
             } else {
-                // CREATE logic (unchanged)
+                // CREATE logic
                 Object.entries(product).forEach(([key, value]) => {
                     if (key !== "images" && key !== "currentSize") {
                         formData.append(key, key === "size" ? JSON.stringify(value) : value);
                     }
                 });
-    
+
                 product.images.forEach(image => {
                     if (image) formData.append("file", image);
                 });
-    
+
                 const response = await createProduct(formData);
-    
+
                 if (response?.data?.success) {
-                    toast.success(`${response.data.data.fishName} added successfully.`);
+                    toast.success(`${response.data.data.fishName} added successfully. Product form has been reset.`);
                     navigate("/admin");
                     setProduct({
                         images: [null, null, null, null],
@@ -186,34 +199,80 @@ const Update = () => {
                     <div className='flex gap-3'>
                         {product.images.map((image, index) => (
                             <label key={index} htmlFor={`image${index + 1}`}>
-                                {Id ?
-                                    <img className='w-20' src={!image ? assets.upload_area : image} alt="" />
-                                    :
-                                    <img className='w-20' src={!image ? assets.upload_area : URL.createObjectURL(image)} alt="" />
-                                }
+                                <img
+                                    className='w-20'
+                                    src={!image
+                                        ? assets.upload_area
+                                        : typeof image === "string"
+                                            ? image
+                                            : URL.createObjectURL(image)}
+                                    alt=""
+                                />
                                 <input type="file" onChange={(e) => handleImageChange(index, e.target.files[0])} id={`image${index + 1}`} hidden />
                             </label>
                         ))}
                     </div>
 
-                    <Input type="text" value={product.fishName} required label='Product Name' onChange={(e) => setProduct(prev => ({ ...prev, fishName: e.target.value }))} />
-                    <Textarea value={product.description} label='Product Description' onChange={(e) => setProduct(prev => ({ ...prev, description: e.target.value }))} />
+                    <Input
+                        type="text"
+                        value={product.fishName}
+                        required
+                        label='Product Name'
+                        onChange={(e) => setProduct(prev => ({ ...prev, fishName: e.target.value }))}
+                    />
 
-                    <Select label="Product Category" value={product.category} onChange={(val) => setProduct(prev => ({ ...prev, category: val }))}>
+                    <Textarea
+                        value={product.description}
+                        label='Product Description'
+                        onChange={(e) => setProduct(prev => ({ ...prev, description: e.target.value }))}
+                    />
+
+                    <Select
+                        label="Product Category"
+                        value={product.category}
+                        onChange={(val) => setProduct(prev => ({ ...prev, category: val }))}
+                    >
                         {["Exotic fishes", "Aquarium Fishes", "Fresh Water Fishes", "Pond Fishes", "Monster Fishes", "Marine Fishes"].map(cat => (
                             <Option key={cat} value={cat}>{cat}</Option>
                         ))}
                     </Select>
 
-                    <Input type="number" value={product.price} required label='Product Price' onChange={(e) => setProduct(prev => ({ ...prev, price: Number(e.target.value) }))} />
-                    <Input type="number" min={0} required value={product.countInStock} label='Product Stock' onChange={(e) => setProduct(prev => ({ ...prev, countInStock: Number(e.target.value) }))} />
+                    <Input
+                        type="number"
+                        value={product.price}
+                        required
+                        label='Product Price'
+                        onChange={(e) => setProduct(prev => ({ ...prev, price: Number(e.target.value) }))}
+                    />
+
+                    <Input
+                        type="number"
+                        min={0}
+                        required
+                        value={product.countInStock}
+                        label='Product Stock'
+                        onChange={(e) => setProduct(prev => ({ ...prev, countInStock: Number(e.target.value) }))}
+                    />
 
                     <div className='flex-wrap md:flex gap-2'>
-                        <Input type="number" value={product.currentSize} label='Product Sizes' onChange={(e) => setProduct(prev => ({ ...prev, currentSize: e.target.value }))} />
+                        <Input
+                            type="number"
+                            value={product.currentSize}
+                            label='Product Sizes'
+                            onChange={(e) => setProduct(prev => ({ ...prev, currentSize: e.target.value }))}
+                        />
                         <div className="flex flex-col gap-2">
                             {product.size.map((size, index) => (
                                 <div key={index} className='!flex items-center gap-2'>
-                                    <IconButton type='button' color='red' onClick={() => setProduct(prev => ({ ...prev, size: product.size.filter(s => s !== size) }))}>
+                                    <IconButton
+                                        type='button'
+                                        color='red'
+                                        onClick={() =>
+                                            setProduct(prev => ({
+                                                ...prev,
+                                                size: product.size.filter(s => s !== size)
+                                            }))
+                                        }>
                                         <p>{size}</p>
                                     </IconButton>
                                 </div>
@@ -223,11 +282,18 @@ const Update = () => {
                     </div>
 
                     <div className='flex gap-2 mt-2'>
-                        <input type="checkbox" checked={product.bestSeller} onChange={() => setProduct(prev => ({ ...prev, bestSeller: !prev.bestSeller }))} id="bestSeller" />
+                        <input
+                            type="checkbox"
+                            checked={product.bestSeller}
+                            onChange={() => setProduct(prev => ({ ...prev, bestSeller: !prev.bestSeller }))}
+                            id="bestSeller"
+                        />
                         <label htmlFor="bestSeller">Add to best seller</label>
                     </div>
 
-                    <Button type="submit" className="bg-black text-white px-16 py-3 text-sm mt-4">{isLoading ? "Processing..." : "Submit"}</Button>
+                    <Button type="submit" className="bg-black text-white px-16 py-3 text-sm mt-4">
+                        {isLoading ? "Processing..." : "Submit"}
+                    </Button>
                 </form>
             </div>
         </div>
