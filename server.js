@@ -2,6 +2,7 @@ import process from "node:process";
 import { app } from "./app.js";
 import { connectDB } from "./config/db.js";
 import { v2 as cloudinary } from "cloudinary"
+import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -15,10 +16,7 @@ cloudinary.config({
 })
 
 
-app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the stack trace
-    res.status(err.status ?? 500).json({ message: err.message ?? "Internal Server Error.!" });
-});
+app.use(errorMiddleware);
 
 
 connectDB().then(() => {

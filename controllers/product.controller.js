@@ -21,7 +21,6 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 
         if (!req.files || req.files.length === 0) throw new ApiError(400, "please provide images.!");
 
-        // console.log('size Error------------:', req.body.size.map(Number));
         let parsedSize = [];
 
         try {
@@ -193,7 +192,6 @@ export const searchAndFindProducts = asyncHandler(async (req, res) => {
         pipeline.push({ $match: matchConditions });
     };
 
-    // console.log(`Pipeline`, buildSortCriteria(sort))
 
     pipeline.push({
         $facet: {
