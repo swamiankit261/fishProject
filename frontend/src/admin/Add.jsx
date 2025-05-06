@@ -31,16 +31,20 @@ const Update = () => {
     });
 
     const [originalProduct, setOriginalProduct] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
 
     const navigate = useNavigate();
     const { Id } = useParams();
-    const [createProduct, { isLoading }] = useCreateProductMutation();
+    const [createProduct] = useCreateProductMutation();
     const [updateProduct] = useUpdateProductMutation();
     const { data } = useFetchProductByIdQuery(Id);
 
     useEffect(() => {
         if (data?.data) {
             setOriginalProduct(data.data);
+            const imgPaths = data.data.images.map(img => img.path);
+            const paddedImages = [...imgPaths, ...Array(4 - imgPaths.length).fill(null)];
             setProduct(prev => ({
                 ...prev,
                 fishName: data.data.fishName,
@@ -50,7 +54,7 @@ const Update = () => {
                 category: data.data.category,
                 size: data.data.size,
                 bestSeller: data.data.bestSeller,
-                images: data.data.images.map(img => img.path)
+                images: paddedImages,
             }));
         }
     }, [data]);
@@ -86,11 +90,9 @@ const Update = () => {
         }
     };
 
-    console.log("product", product.size.map(Number));
-
     const onSubmitHandler = async (e) => {
         e.preventDefault();
-
+        setIsSubmitting(true);
         try {
             const formData = new FormData();
 
@@ -119,7 +121,7 @@ const Update = () => {
                     hasChanges = true;
                 }
                 if (JSON.stringify(product.size) !== JSON.stringify(originalProduct.size)) {
-                    formData.append("size", product.size);
+                    formData.append("size", JSON.stringify(product.size));
                     hasChanges = true;
                 }
                 if (product.bestSeller !== originalProduct.bestSeller) {
@@ -138,9 +140,7 @@ const Update = () => {
                         hasChanges = true;
                     }
                 });
-                for (const [key, value] of formData.entries()) {
-                    console.warn(key, value);
-                }
+
                 if (!hasChanges) {
                     toast.info("No changes detected.");
                     return;
@@ -189,8 +189,12 @@ const Update = () => {
             }
         } catch (error) {
             toast.error(error.message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
+
+
     return (
         <div className='flex w-full'>
             <Sidebar />
@@ -263,7 +267,7 @@ const Update = () => {
                             onChange={(e) => setProduct(prev => ({ ...prev, currentSize: e.target.value }))}
                         />
                         <div className="flex flex-col gap-2">
-                            {product.size?.map((size, index) => (
+                            {product.size.map((size, index) => (
                                 <div key={index} className='!flex items-center gap-2'>
                                     <IconButton
                                         type='button'
@@ -292,8 +296,12 @@ const Update = () => {
                         <label htmlFor="bestSeller">Add to best seller</label>
                     </div>
 
-                    <Button type="submit" className="bg-black text-white px-16 py-3 text-sm mt-4">
-                        {isLoading ? "Processing..." : "Submit"}
+                    <Button
+                        type="submit"
+                        className="bg-black text-white px-16 py-3 text-sm mt-4"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? "Processing..." : "Submit"}
                     </Button>
                 </form>
             </div>

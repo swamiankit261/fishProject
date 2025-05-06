@@ -31,16 +31,19 @@ const Update = () => {
     });
 
     const [originalProduct, setOriginalProduct] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
     const { Id } = useParams();
-    const [createProduct, { isLoading }] = useCreateProductMutation();
+    const [createProduct] = useCreateProductMutation();
     const [updateProduct] = useUpdateProductMutation();
     const { data } = useFetchProductByIdQuery(Id);
 
     useEffect(() => {
         if (data?.data) {
             setOriginalProduct(data.data);
+            const imgPaths = data.data.images.map(img => img.path);
+            const paddedImages = [...imgPaths, ...Array(4 - imgPaths.length).fill(null)];
             setProduct(prev => ({
                 ...prev,
                 fishName: data.data.fishName,
@@ -50,10 +53,21 @@ const Update = () => {
                 category: data.data.category,
                 size: data.data.size,
                 bestSeller: data.data.bestSeller,
-                images: data.data.images.map(img => img.path)
+                images: paddedImages
             }));
         }
     }, [data]);
+
+    // Cleanup for object URLs
+    useEffect(() => {
+        return () => {
+            product.images.forEach(img => {
+                if (img && typeof img !== 'string') {
+                    URL.revokeObjectURL(img);
+                }
+            });
+        };
+    }, [product.images]);
 
     const handleImageChange = (index, file) => {
         setProduct(prev => {
@@ -88,6 +102,7 @@ const Update = () => {
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
         try {
             const formData = new FormData();
@@ -95,7 +110,7 @@ const Update = () => {
             if (Id) {
                 let hasChanges = false;
 
-                // Compare fields and append only modified ones
+                // Compare and add only changed fields
                 if (product.fishName !== originalProduct.fishName) {
                     formData.append("fishName", product.fishName);
                     hasChanges = true;
@@ -125,7 +140,7 @@ const Update = () => {
                     hasChanges = true;
                 }
 
-                // Handle images (existing URLs + new Files)
+                // Append images
                 product.images.forEach(img => {
                     if (img) {
                         if (typeof img === 'string') {
@@ -152,7 +167,7 @@ const Update = () => {
                 }
 
             } else {
-                // CREATE logic
+                // Create new product
                 Object.entries(product).forEach(([key, value]) => {
                     if (key !== "images" && key !== "currentSize") {
                         formData.append(key, key === "size" ? JSON.stringify(value) : value);
@@ -185,17 +200,17 @@ const Update = () => {
             }
         } catch (error) {
             toast.error(error.message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
-
-    console.log("image",product.images);
 
     return (
         <div className='flex w-full'>
             <Sidebar />
             <div className='w-[70%] mx-auto ml-[max(5vw,25px)] my-8 text-gray-600 text-base'>
                 <form onSubmit={onSubmitHandler} className='flex flex-col w-full items-start gap-3'>
-                    <p className='mb-2'>Upload Images</p>
+                    <label className='mb-2'>Upload Images</label>
                     <div className='flex gap-3'>
                         {product.images.map((image, index) => (
                             <label key={index} htmlFor={`image${index + 1}`}>
@@ -206,7 +221,7 @@ const Update = () => {
                                         : typeof image === "string"
                                             ? image
                                             : URL.createObjectURL(image)}
-                                    alt=""
+                                    alt="upload"
                                 />
                                 <input type="file" onChange={(e) => handleImageChange(index, e.target.files[0])} id={`image${index + 1}`} hidden />
                             </label>
@@ -230,7 +245,7 @@ const Update = () => {
                     <Select
                         label="Product Category"
                         value={product.category}
-                        onChange={(val) => setProduct(prev => ({ ...prev, category: val }))}
+                        onChange={(val) => val && setProduct(prev => ({ ...prev, category: val }))}
                     >
                         {["Exotic fishes", "Aquarium Fishes", "Fresh Water Fishes", "Pond Fishes", "Monster Fishes", "Marine Fishes"].map(cat => (
                             <Option key={cat} value={cat}>{cat}</Option>
@@ -263,7 +278,7 @@ const Update = () => {
                         />
                         <div className="flex flex-col gap-2">
                             {product.size.map((size, index) => (
-                                <div key={index} className='!flex items-center gap-2'>
+                                <div key={index} className='flex items-center gap-2'>
                                     <IconButton
                                         type='button'
                                         color='red'
@@ -291,8 +306,12 @@ const Update = () => {
                         <label htmlFor="bestSeller">Add to best seller</label>
                     </div>
 
-                    <Button type="submit" className="bg-black text-white px-16 py-3 text-sm mt-4">
-                        {isLoading ? "Processing..." : "Submit"}
+                    <Button
+                        type="submit"
+                        className="bg-black text-white px-16 py-3 text-sm mt-4"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? "Processing..." : "Submit"}
                     </Button>
                 </form>
             </div>

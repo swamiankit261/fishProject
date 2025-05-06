@@ -72,7 +72,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
     if (!/^[0-9a-fA-F]{24}$/.test(id)) throw new ApiError(400, "Please provide a valid product ID.");
 
-    if (![fishName, description, price, countInStock, category, size, bestSeller].some(item => item)) {
+    if (![fishName, description, price, countInStock, category, size, bestSeller, req.files].some(item => item)) {
         throw new ApiError(400, "At least one field is required.");
     }
 
