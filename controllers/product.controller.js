@@ -60,9 +60,11 @@ export const updateProduct = asyncHandler(async (req, res) => {
     if (!/^[0-9a-fA-F]{24}$/.test(id)) throw new ApiError(400, "Please provide product valid ID.!");
 
     // Check if at least one field is provided
+    console.log(`req.body`, req.body);
     if (![fishName, description, price, countInStock, category, size].some(item => item)) {
         throw new ApiError(400, "At least one field is required.");
     }
+
 
     const product = await Product.findById(id);
     if (!product) throw new ApiError(404, "Product not found.!");

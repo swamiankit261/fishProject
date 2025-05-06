@@ -19,6 +19,7 @@ import Add from './admin/Add.jsx';
 import OrderList from "./admin/pages/OrderList.jsx"
 import { ThemeProvider } from "@material-tailwind/react";
 import Profile from './pages/Profile.jsx';
+import Update from './admin/Update.jsx';
 
 
 const router = createBrowserRouter(
@@ -28,10 +29,11 @@ const router = createBrowserRouter(
       <Route path='/collection' element={<Collection />} />
       <Route element={<PrivateRoutes />} >
         <Route path='/cart' element={<Cart />} />
-        <Route path='/admin/add/:Id' element={<Add />} />
+        <Route path='/admin/add' element={<Add />} />
         <Route path='/admin/add' element={<Add />} />
         <Route path='/admin/orderslist' element={<OrderList />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path='/admin/update/:Id' element={<Update />} />
         <Route path='/orders' element={<Orders />} />
         <Route path='/place-order' element={<PlaceOrder />} />
       </Route>

@@ -122,7 +122,7 @@ const List = () => {
                                 <p>{item?.countInStock || <span className='text-red-500'>N/A</span>}</p>
                                 <p>{item?.price || 'N/A'}</p>
                                 <NavLink
-                                    // to={`/admin/add/${item?._id}`}
+                                    to={`/admin/update/${item?._id}`}
                                     className=" align-middle text-center m-auto hover:text-green-600"
                                 >
                                     <CiEdit className='text-xl m-auto' />
