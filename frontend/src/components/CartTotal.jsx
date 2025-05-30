@@ -20,10 +20,10 @@ const CartTotal = (props) => {
                     <p>₹ {Math.ceil(Subtotal)}.00</p>
                 </div>
                 <hr />
-                <div className='flex justify-between'>
+                {/* <div className='flex justify-between'>
                     <p>GST</p>
                     <p> {import.meta.env.VITE_GST} %</p>
-                </div>
+                </div> */}
                 <hr />
                 <div className='flex justify-between'>
                     <p>Shipping Fee</p>
