@@ -15,7 +15,7 @@ import ShowModal from './ShowModal';
 
 const PlaceOrder = () => {
     const { items, total } = useSelector(store => store.cart);
-    const [method, setMethod] = useState('Cash on delivery'); // Default payment method
+    const [method, setMethod] = useState('UPI'); // Default payment method
     const [showModal, setShowModal] = useState(false);
     const [paymentInfo, setPaymentInfo] = useState({});
 
@@ -275,7 +275,7 @@ const PlaceOrder = () => {
                             </div>
 
                             {/* Cash on Delivery */}
-                            <div
+                            {/* <div
                                 onClick={() => setMethod('Cash on delivery')}
                                 className={`flex items-center gap-3 border p-2 px-3 cursor-pointer ${method === 'Cash on delivery' ? 'border-green-400' : ''
                                     }`}
@@ -285,7 +285,7 @@ const PlaceOrder = () => {
                                         }`}
                                 ></p>
                                 <p>Cash on Delivery</p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
